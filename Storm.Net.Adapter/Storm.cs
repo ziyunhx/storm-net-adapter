@@ -90,8 +90,9 @@ namespace Storm
                 string msg = ReadMsg();
                 JContainer container = JsonConvert.DeserializeObject(msg) as JContainer;
 
-                string taskId, streamId, tupleId, component;
-                List<object> value = new List<object>();
+                int taskId = -1;
+                string streamId = "", tupleId = "", component = "";
+                List<object> values = new List<object>();
 
                 try
                 {
@@ -128,7 +129,7 @@ namespace Storm
                     var _taskId = container["task"];
                     if (_taskId != null && _taskId.GetType() == typeof(JValue))
                     {
-                        taskId = (_taskId as JValue).Value.ToString();
+                        Int32.TryParse((_taskId as JValue).Value.ToString(), out taskId);
                     }
                 }
                 catch { }
@@ -136,12 +137,18 @@ namespace Storm
                 try
                 {
                     var _values = container["tuple"];
-                    if (_values != null && _values.GetType() == typeof(JValue))
+                    if (_values != null && _values.GetType() == typeof(JArray))
                     {
-                        tupleId = (_values as JValue).Value.ToString();
+                        foreach (var item in _values as JArray)
+                        {
+                            values.Add((item as JValue).Value);
+                        }
                     }
                 }
                 catch { }
+
+                if (!string.IsNullOrWhiteSpace(tupleId))
+                    return new StormTuple(values, taskId, streamId, tupleId, component);
             }
             while (true);
         }

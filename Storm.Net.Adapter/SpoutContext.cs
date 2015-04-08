@@ -36,15 +36,15 @@ namespace Storm
         }
         public override void Emit(string streamId, IEnumerable<StormTuple> anchors, List<object> tuple)
         {
-            throw new Exception("[SpoutContext] Only Non-Tx Bolt can call this function!");
+            throw new Exception("[SpoutContext] Bolt can not call this function!");
         }
         public override void Ack(StormTuple tuple)
         {
-            throw new Exception("[SpoutContext] Only Non-Tx Bolt can call this function!");
+            throw new Exception("[SpoutContext] Bolt can not call this function!");
         }
         public override void Fail(StormTuple tuple)
         {
-            throw new Exception("[SpoutContext] Only Non-Tx Bolt can call this function!");
+            throw new Exception("[SpoutContext] Bolt can not call this function!");
         }
         internal SpoutContext(bool enableAck = true)
         {
