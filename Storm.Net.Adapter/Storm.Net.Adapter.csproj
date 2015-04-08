@@ -42,7 +42,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ComponentStreamSchema.cs" />
     <Compile Include="Config.cs" />
     <Compile Include="Constants.cs" />
     <Compile Include="Context.cs" />
@@ -52,11 +51,8 @@
     <Compile Include="Logger.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="PluginType.cs" />
-    <Compile Include="ProxyEvent.cs" />
-    <Compile Include="ProxyMessage.cs" />
     <Compile Include="BoltContext.cs" />
     <Compile Include="SpoutContext.cs" />
-    <Compile Include="Serializer.cs" />
     <Compile Include="Storm.cs" />
     <Compile Include="Command.cs" />
     <Compile Include="TopologyContext.cs" />
