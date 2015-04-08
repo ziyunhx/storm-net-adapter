@@ -43,10 +43,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Config.cs" />
-    <Compile Include="Constants.cs" />
     <Compile Include="Context.cs" />
     <Compile Include="Fields.cs" />
     <Compile Include="IBolt.cs" />
+    <Compile Include="IPlugin.cs" />
     <Compile Include="ISpout.cs" />
     <Compile Include="Logger.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

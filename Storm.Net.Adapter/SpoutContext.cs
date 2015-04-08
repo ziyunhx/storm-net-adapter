@@ -11,7 +11,7 @@ namespace Storm
         {
             if (this._enableAck)
             {
-                throw new Exception("[SpoutContext] Ack enabled, should call Emit() with seqId!");
+                Context.Logger.Error("[SpoutContext] Ack enabled, should call Emit() with seqId!");
             }
             this.Emit("default", values);
         }
@@ -26,15 +26,15 @@ namespace Storm
         }
         public override void Emit(string streamId, IEnumerable<StormTuple> anchors, List<object> tuple)
         {
-            throw new Exception("[SpoutContext] Bolt can not call this function!");
+            Context.Logger.Error("[SpoutContext] Bolt can not call this function!");
         }
         public override void Ack(StormTuple tuple)
         {
-            throw new Exception("[SpoutContext] Bolt can not call this function!");
+            Context.Logger.Error("[SpoutContext] Bolt can not call this function!");
         }
         public override void Fail(StormTuple tuple)
         {
-            throw new Exception("[SpoutContext] Bolt can not call this function!");
+            Context.Logger.Error("[SpoutContext] Bolt can not call this function!");
         }
         internal SpoutContext(bool enableAck = true)
         {

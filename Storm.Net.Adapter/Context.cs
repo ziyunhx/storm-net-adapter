@@ -32,15 +32,15 @@ namespace Storm
         {
             if (this._schemaByCSharp == null || this._schemaByCSharp.OutputStreamSchema == null)
             {
-                throw new Exception(string.Format("[Context.generateProxyMessage()] NO output schema declared!", new object[0]));
+                Context.Logger.Error(string.Format("[Context.generateProxyMessage()] NO output schema declared!", new object[0]));
             }
             if (!this._schemaByCSharp.OutputStreamSchema.ContainsKey(streamId))
             {
-                throw new Exception(string.Format("[Context.generateProxyMessage()] NO output schema specified for {0}!", streamId));
+                Context.Logger.Error(string.Format("[Context.generateProxyMessage()] NO output schema specified for {0}!", streamId));
             }
             if (this._schemaByCSharp.OutputStreamSchema[streamId].Count != tupleFieldCount)
             {
-                throw new Exception(string.Format("[Context.generateProxyMessage()] out schema ({0} fields) MISMATCH with data ({1} fields) for streamId: {2}!", this._schemaByCSharp.OutputStreamSchema.Count, tupleFieldCount, streamId));
+                Context.Logger.Error(string.Format("[Context.generateProxyMessage()] out schema ({0} fields) MISMATCH with data ({1} fields) for streamId: {2}!", this._schemaByCSharp.OutputStreamSchema.Count, tupleFieldCount, streamId));
             }
         }
         
@@ -48,19 +48,19 @@ namespace Storm
         {
             if (this._schemaByCSharp == null)
             {
-                throw new Exception("[Context.CheckInputSchema()] null schema");
+                Context.Logger.Error("[Context.CheckInputSchema()] null schema");
             }
             if (this._schemaByCSharp.InputStreamSchema == null)
             {
-                throw new Exception("[Context.CheckInputSchema()] null schema.InputStreamSchema");
+                Context.Logger.Error("[Context.CheckInputSchema()] null schema.InputStreamSchema");
             }
             if (!this._schemaByCSharp.InputStreamSchema.ContainsKey(streamId))
             {
-                throw new Exception(string.Format("[Context.CheckInputSchema()] unkown streamId: {0}", streamId));
+                Context.Logger.Error(string.Format("[Context.CheckInputSchema()] unkown streamId: {0}", streamId));
             }
             if (this._schemaByCSharp.InputStreamSchema[streamId].Count != tupleFieldCount)
             {
-                throw new Exception(string.Format("[Context.CheckInputSchema()] count mismatch, streamId: {0}, SchemaFieldCount: {1}, tupleFieldCount: {2}", streamId, this._schemaByCSharp.InputStreamSchema[streamId].Count, tupleFieldCount));
+                Context.Logger.Error(string.Format("[Context.CheckInputSchema()] count mismatch, streamId: {0}, SchemaFieldCount: {1}, tupleFieldCount: {2}", streamId, this._schemaByCSharp.InputStreamSchema[streamId].Count, tupleFieldCount));
             }
         }
     }

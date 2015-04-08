@@ -31,11 +31,6 @@ namespace StormSample1
             outputSchema.Add("default", new List<Type>() { typeof(string), typeof(int) });
             this.ctx.DeclareComponentSchema(new ComponentStreamSchema(inputSchema, outputSchema));
 
-            // Demo how to get pluginConf info and enable ACK in Non-Tx topology
-            if (Context.Config.StormConf.ContainsKey(Constants.NONTRANSACTIONAL_ENABLE_ACK))
-            {
-                enableAck = (bool)(Context.Config.StormConf[Constants.NONTRANSACTIONAL_ENABLE_ACK]);
-            }
             Context.Logger.Info("enableAck: {0}", enableAck);
         }
 
@@ -53,7 +48,7 @@ namespace StormSample1
             counts[word] = count;
 
             Context.Logger.Info("Emit: {0}, count: {1}", word, count);
-            this.ctx.Emit(Constants.DEFAULT_STREAM_ID, new List<StormTuple> { tuple }, new List<object> { word, count });
+            this.ctx.Emit("default", new List<StormTuple> { tuple }, new List<object> { word, count });
 
             if (enableAck)
             {

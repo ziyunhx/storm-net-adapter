@@ -2,10 +2,10 @@ using System.Collections.Generic;
 
 namespace Storm
 {
-    public interface ISpout
+    public interface ISpout : IPlugin
     {
-        void NextTuple(Dictionary<string, object> parms);
-        void Ack(long seqId, Dictionary<string, object> parms);
-        void Fail(long seqId, Dictionary<string, object> parms);
+        void NextTuple();
+        void Ack(long seqId);
+        void Fail(long seqId);
     }
 }

@@ -26,7 +26,7 @@ namespace StormSample1
                                           "snow white and the seven dwarfs",
                                           "i am at two with nature"};
 
-        public Generator(Context ctx, Dictionary<string, Object> parms = null)
+        public Generator(Context ctx)
         {
             Context.Logger.Info("Generator constructor called");
             this.ctx = ctx;
@@ -36,11 +36,6 @@ namespace StormSample1
             outputSchema.Add("default", new List<Type>() { typeof(string) });
             this.ctx.DeclareComponentSchema(new ComponentStreamSchema(null, outputSchema));
 
-            // Demo how to get pluginConf info and enable ACK in Non-Tx topology
-            if (Context.Config.StormConf.ContainsKey(Constants.NONTRANSACTIONAL_ENABLE_ACK))
-            {
-                enableAck = (bool)(Context.Config.StormConf[Constants.NONTRANSACTIONAL_ENABLE_ACK]);
-            }
             Context.Logger.Info("enableAck: {0}", enableAck);
         }
 
@@ -50,7 +45,7 @@ namespace StormSample1
         /// When there are no tuples to emit, it is courteous to have NextTuple sleep for a short amount of time (such as 10 milliseconds), so as not to waste too much CPU.
         /// </summary>
         /// <param name="parms"></param>
-        public void NextTuple(Dictionary<string, Object> parms)
+        public void NextTuple()
         {
             Context.Logger.Info("NextTuple enter");
             string sentence;
@@ -62,7 +57,7 @@ namespace StormSample1
                     lastSeqId++;
                     sentence = sentences[rand.Next(0, sentences.Length - 1)];
                     Context.Logger.Info("Emit: {0}, seqId: {1}", sentence, lastSeqId);
-                    this.ctx.Emit(Constants.DEFAULT_STREAM_ID, new List<object>(){sentence}, lastSeqId);
+                    this.ctx.Emit("default", new List<object>(){sentence}, lastSeqId);
                     cachedTuples[lastSeqId] = sentence;
                 }
                 else
@@ -88,7 +83,7 @@ namespace StormSample1
         /// </summary>
         /// <param name="seqId">Sequence Id of the tuple which is acked.</param>
         /// <param name="parms"></param>
-        public void Ack(long seqId, Dictionary<string, Object> parms)
+        public void Ack(long seqId)
         {
             Context.Logger.Info("Ack, seqId: {0}", seqId);
             bool result = cachedTuples.Remove(seqId);
@@ -104,14 +99,14 @@ namespace StormSample1
         /// </summary>
         /// <param name="seqId">Sequence Id of the tuple which is failed.</param>
         /// <param name="parms"></param>
-        public void Fail(long seqId, Dictionary<string, Object> parms)
+        public void Fail(long seqId)
         {
             Context.Logger.Info("Fail, seqId: {0}", seqId);
             if (cachedTuples.ContainsKey(seqId))
             {
                 string sentence = cachedTuples[seqId];
                 Context.Logger.Info("Re-Emit: {0}, seqId: {1}", sentence, seqId);
-                this.ctx.Emit(Constants.DEFAULT_STREAM_ID, new List<object>(){sentence}, seqId);
+                this.ctx.Emit("default", new List<object>() { sentence }, seqId);
             }
             else
             {
@@ -125,9 +120,9 @@ namespace StormSample1
         /// <param name="ctx">Context instance</param>
         /// <param name="parms">Parameters to initialize this spout/bolt</param>
         /// <returns></returns>
-        public static Generator Get(Context ctx, Dictionary<string, Object> parms)
+        public static Generator Get(Context ctx)
         {
-            return new Generator(ctx, parms);
+            return new Generator(ctx);
         }
     }
 }

@@ -2,7 +2,6 @@
 using System.Linq;
 using Storm;
 
-
 namespace StormSample1
 {
     class HelloWorld
@@ -29,6 +28,10 @@ namespace StormSample1
                 {
                     throw new Exception(string.Format("unexpected compName: {0}", compName));
                 }
+            }
+            else
+            {
+                throw new Exception("Not support local model.");
             }
         }
     }

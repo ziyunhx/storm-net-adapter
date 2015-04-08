@@ -4,6 +4,6 @@ namespace Storm
     {
         SPOUT,
         BOLT,
-        BATCH_BOLT
+        UNKNOW
     }
 }

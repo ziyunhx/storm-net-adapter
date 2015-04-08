@@ -16,7 +16,7 @@ namespace Storm
         public override void Emit(string streamId, List<object> values, long? seqId = null)
         {
             if (seqId != null)
-                throw new Exception("[BoltContext] Only Non-Tx Spout can call this function!");
+                Context.Logger.Error("[BoltContext] Only Non-Tx Spout can call this function!");
             else
                 this.Emit(streamId, null, values);
         }
@@ -33,31 +33,22 @@ namespace Storm
             base.CheckOutputSchema(streamId, values == null ? 0 : values.Count);
             string msg = @"""command"": ""emit"", ""anchors"": ""{0}"", ""stream"": ""{1}"", ""tuple"": [{2}]";
             Storm.SendMsgToParent("{" + string.Format(msg, JsonConvert.SerializeObject(tupleIds), streamId, JsonConvert.SerializeObject(values)) + "}");
-
-            //As of version 0.7.1, there is no longer any need for a shell bolt to 'sync'.
-            //Storm.Sync();
         }
         public override void Ack(StormTuple tuple)
         {
             if (!this._enableAck)
             {
-                throw new Exception("[BoltContext.Ack()] nontransactional.ack.enabled is not enabled!");
+                Context.Logger.Error("[BoltContext.Ack()] nontransactional.ack.enabled is not enabled!");
             }
             Storm.Ack(tuple);
-
-            //As of version 0.7.1, there is no longer any need for a shell bolt to 'sync'.
-            //Storm.Sync();
         }
         public override void Fail(StormTuple tuple)
         {
             if (!this._enableAck)
             {
-                throw new Exception("[BoltContext.Fail()] nontransactional.ack.enabled is not enabled!");
+                Context.Logger.Error("[BoltContext.Fail()] nontransactional.ack.enabled is not enabled!");
             }
             Storm.Fail(tuple);
-
-            //As of version 0.7.1, there is no longer any need for a shell bolt to 'sync'.
-            //Storm.Sync();
         }
         internal BoltContext(bool enableAck = true)
         {

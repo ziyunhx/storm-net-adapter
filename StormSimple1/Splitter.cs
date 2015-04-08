@@ -28,11 +28,6 @@ namespace StormSample1
             outputSchema.Add("default", new List<Type>() { typeof(string), typeof(char) });
             this.ctx.DeclareComponentSchema(new ComponentStreamSchema(inputSchema, outputSchema));
 
-            // Demo how to get pluginConf info and enable ACK in Non-Tx topology
-            if (Context.Config.StormConf.ContainsKey(Constants.NONTRANSACTIONAL_ENABLE_ACK))
-            {
-                enableAck = (bool)(Context.Config.StormConf[Constants.NONTRANSACTIONAL_ENABLE_ACK]);
-            }
             Context.Logger.Info("enableAck: {0}", enableAck);
 
             // Demo how to get stormConf info
@@ -55,7 +50,7 @@ namespace StormSample1
             foreach (string word in sentence.Split(' '))
             {
                 Context.Logger.Info("Emit: {0}", word);
-                this.ctx.Emit(Constants.DEFAULT_STREAM_ID, new List<StormTuple> { tuple }, new List<object> { word, word[0] });
+                this.ctx.Emit("default", new List<StormTuple> { tuple }, new List<object> { word, word[0] });
             }
 
             if (enableAck)
@@ -86,7 +81,7 @@ namespace StormSample1
         /// <param name="ctx">Context instance</param>
         /// <param name="parms">Parameters to initialize this spout/bolt</param>
         /// <returns></returns>
-        public static Splitter Get(Context ctx, Dictionary<string, Object> parms)
+        public static Splitter Get(Context ctx)
         {
             return new Splitter(ctx);
         }

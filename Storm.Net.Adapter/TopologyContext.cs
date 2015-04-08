@@ -88,7 +88,7 @@ namespace Storm
         {
             if (taskId == -1)
             {
-                return Constants.SYSTEM_COMPONENT_ID;
+                return "__system";
             }
             return this._taskToComponent[taskId];
         }

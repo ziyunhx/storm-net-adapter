@@ -1,6 +1,6 @@
 namespace Storm
 {
-    public interface IBolt
+    public interface IBolt : IPlugin
     {
         void Execute(StormTuple tuple);
     }

@@ -12,6 +12,53 @@ namespace Storm
     {
         public static Queue<Command> pendingTasks = new Queue<Command>();
 
+
+        public static void LaunchPlugin(newPlugin createDelegate)
+		{
+            TopologyContext context = null;
+            Config config = new Config();
+
+            InitComponent(ref config, ref context);
+
+            if (createDelegate.GetType().BaseType == typeof(ISpout))
+                Context.pluginType = PluginType.SPOUT;
+            else if(createDelegate.GetType().BaseType == typeof(IBolt))
+                Context.pluginType = PluginType.BOLT;
+            else
+                Context.pluginType = PluginType.UNKNOW;
+
+			PluginType pluginType = Context.pluginType;
+			Context.Logger.Info("LaunchPlugin, pluginType: {0}", new object[]
+			{
+				pluginType
+			});
+
+			switch (pluginType)
+			{
+				case PluginType.SPOUT:
+				{
+					Spout spout = new Spout(createDelegate);
+                    spout.Launch();
+					return;
+				}
+				case PluginType.BOLT:
+				{
+					Bolt bolt = new Bolt(createDelegate);
+                    bolt.Launch();
+					return;
+				}
+				default:
+				{
+					Context.Logger.Error("unexpected pluginType: {0}!", new object[]
+					{
+						pluginType
+					});
+                    return;
+				}
+			}
+		}
+
+
         /// <summary>
         /// write lines to default stream.
         /// </summary>
@@ -165,7 +212,7 @@ namespace Storm
             {
                 string line = Console.ReadLine();
                 if (string.IsNullOrWhiteSpace(line))
-                    throw new Exception("Read EOF from stdin");
+                    Context.Logger.Error("Read EOF from stdin");
 
                 if (line == "end")
                     break;
@@ -260,10 +307,113 @@ namespace Storm
                 return new TopologyContext(taskId, "", component);
 
             }
-            catch
+            catch (Exception ex)
             {
+                Context.Logger.Error(ex.ToString());
                 return null;
             }
         }
+    }
+
+    public class Spout
+    {
+		private newPlugin _createDelegate;
+		private ISpout _spout;
+		private SpoutContext _ctx;
+        public Spout(newPlugin createDelegate)
+		{
+			this._createDelegate = createDelegate;
+		}
+		public void Launch()
+		{
+			Context.Logger.Info("[Spout] Launch ...");
+			this._ctx = new SpoutContext();
+			IPlugin iPlugin = this._createDelegate(this._ctx);
+			if (!(iPlugin is ISpout))
+			{
+				Context.Logger.Error("[Spout] newPlugin must return ISpout!");
+				//Context.Logger.Error("[Spout] newPlugin must return ISpout!");
+			}
+			this._spout = (ISpout)iPlugin;
+			Stopwatch stopwatch = new Stopwatch();
+			while (true)
+			{
+                try
+                {
+                    stopwatch.Restart();
+                    Command command = Storm.ReadCommand();
+                    if (command.Name == "next")
+                    {
+                        this._spout.NextTuple();
+                    }
+                    else if (command.Name == "ack")
+                    {
+                        long seqId = long.Parse(command.Id);
+                        this._spout.Ack(seqId);
+                    }
+                    else if (command.Name == "fail")
+                    {
+                        long seqId = long.Parse(command.Id);
+                        this._spout.Fail(seqId);
+                    }
+                    else
+                    {
+                        Context.Logger.Error("[Spout] unexpected message.");
+                        //Context.Logger.Error("[Spout] unexpected message.");
+                    }
+                    Storm.Sync();
+                    stopwatch.Stop();
+                }
+                catch (Exception ex)
+                {
+                    Context.Logger.Error(ex.ToString());
+                }
+			}
+		}
+    }
+
+    public class Bolt
+    {
+		private newPlugin _createDelegate;
+		private IBolt _bolt;
+		private BoltContext _ctx;
+		public Bolt(newPlugin createDelegate)
+		{
+			this._createDelegate = createDelegate;
+		}
+		public void Launch()
+		{
+			Context.Logger.Info("[Bolt] Launch ...");
+			this._ctx = new BoltContext();
+			IPlugin iPlugin = this._createDelegate(this._ctx);
+			if (!(iPlugin is IBolt))
+			{
+				Context.Logger.Error("[Bolt] newPlugin must return IBolt!");
+				//Context.Logger.Error("[SetBolt] newPlugin must return IBolt!");
+			}
+			this._bolt = (IBolt)iPlugin;
+			Stopwatch stopwatch = new Stopwatch();
+			while (true)
+			{
+				stopwatch.Restart();
+                StormTuple tuple = Storm.ReadTuple();
+                if (tuple.IsHeartBeatTuple())
+                    Storm.Sync();
+                else
+                {
+                    try
+                    {
+                        this._bolt.Execute(tuple);
+                        this._ctx.Ack(tuple);
+                    }
+                    catch (Exception ex)
+                    {
+                        Context.Logger.Error(ex.ToString());
+                        this._ctx.Fail(tuple);
+                    }
+                }
+				stopwatch.Stop();
+			}
+		}
     }
 }
