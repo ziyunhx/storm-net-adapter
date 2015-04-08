@@ -25,6 +25,7 @@
         private void SendLog(string Message, int level = 2)
         {
             Storm.SendMsgToParent("{\"command\": \"log\", \"msg\": " + Message + ", \"level\":" + level + "}");
+            Storm.Sync();
         }
     }
 }

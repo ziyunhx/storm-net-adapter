@@ -54,11 +54,18 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
+    <Compile Include="Context.cs" />
     <Compile Include="Storm.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Storm.Net.Adapter\Storm.Net.Adapter.csproj">
+      <Project>{11243fbd-674f-4b0a-8119-95a5c8708323}</Project>
+      <Name>Storm.Net.Adapter</Name>
+    </ProjectReference>
   </ItemGroup>
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">

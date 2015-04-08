@@ -1,3 +1,4 @@
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -6,46 +7,35 @@ namespace Storm
 {
     internal class BoltContext : Context
     {
-
-        private static int batchSize = 100;
-        //private string _processKey;
         private bool _enableAck;
         public override void Emit(List<object> values)
         {
             this.Emit("default", values);
         }
-        public override void Emit(string streamId, List<object> values)
+
+        public override void Emit(string streamId, List<object> values, long? seqId = null)
         {
-
-
-
-            //ProxyMessage item = base.generateProxyMessage(streamId, string.Empty, ProxyEvent.DEFAULT, values);
-            //this.msgQueue.Enqueue(item);
-            //if (this.msgQueue.Count >= BoltContext.batchSize)
-            //{
-            //    base.FlushMsgQueue();
-            //}
-        }
-        public override void Emit(string streamId, List<object> values, long seqId)
-        {
-            throw new Exception("[BoltContext] Only Non-Tx Spout can call this function!");
+            if (seqId != null)
+                throw new Exception("[BoltContext] Only Non-Tx Spout can call this function!");
+            else
+                this.Emit(streamId, null, values);
         }
         public override void Emit(string streamId, IEnumerable<StormTuple> anchors, List<object> values)
         {
-            string tupleId = string.Empty;
+            List<string> tupleIds = new List<string>();
             if (anchors != null && anchors.Count<StormTuple>() > 0)
             {
-                string[] value = (
+                tupleIds = (
                     from p in anchors
-                    select p.GetTupleId()).ToArray<string>();
-                tupleId = string.Join(",", value);
+                    select p.GetTupleId()).ToList<string>();
             }
-            ProxyMessage item = base.generateProxyMessage(streamId, tupleId, ProxyEvent.DEFAULT, values);
-            this.msgQueue.Enqueue(item);
-            if (this.msgQueue.Count >= BoltContext.batchSize)
-            {
-                base.FlushMsgQueue();
-            }
+
+            base.CheckOutputSchema(streamId, values == null ? 0 : values.Count);
+            string msg = @"""command"": ""emit"", ""anchors"": ""{0}"", ""stream"": ""{1}"", ""tuple"": [{2}]";
+            Storm.SendMsgToParent("{" + string.Format(msg, JsonConvert.SerializeObject(tupleIds), streamId, JsonConvert.SerializeObject(values)) + "}");
+
+            //As of version 0.7.1, there is no longer any need for a shell bolt to 'sync'.
+            //Storm.Sync();
         }
         public override void Ack(StormTuple tuple)
         {
@@ -53,12 +43,10 @@ namespace Storm
             {
                 throw new Exception("[BoltContext.Ack()] nontransactional.ack.enabled is not enabled!");
             }
-            ProxyMessage item = base.generateProxyMessage("default", tuple.GetTupleId(), ProxyEvent.ACK_TUPLE, null);
-            this.msgQueue.Enqueue(item);
-            if (this.msgQueue.Count >= BoltContext.batchSize)
-            {
-                base.FlushMsgQueue();
-            }
+            Storm.Ack(tuple);
+
+            //As of version 0.7.1, there is no longer any need for a shell bolt to 'sync'.
+            //Storm.Sync();
         }
         public override void Fail(StormTuple tuple)
         {
@@ -66,12 +54,10 @@ namespace Storm
             {
                 throw new Exception("[BoltContext.Fail()] nontransactional.ack.enabled is not enabled!");
             }
-            ProxyMessage item = base.generateProxyMessage("default", tuple.GetTupleId(), ProxyEvent.FAIL_TUPLE, null);
-            this.msgQueue.Enqueue(item);
-            if (this.msgQueue.Count >= BoltContext.batchSize)
-            {
-                base.FlushMsgQueue();
-            }
+            Storm.Fail(tuple);
+
+            //As of version 0.7.1, there is no longer any need for a shell bolt to 'sync'.
+            //Storm.Sync();
         }
         internal BoltContext(bool enableAck = true)
         {

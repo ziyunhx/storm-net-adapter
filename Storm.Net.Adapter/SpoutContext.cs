@@ -1,3 +1,4 @@
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 
@@ -5,8 +6,6 @@ namespace Storm
 {
     internal class SpoutContext : Context
     {
-        private static int batchSize = 100;
-        //private string _processKey;
         private bool _enableAck;
         public override void Emit(List<object> values)
         {
@@ -16,23 +15,14 @@ namespace Storm
             }
             this.Emit("default", values);
         }
-        public override void Emit(string streamId, List<object> values)
+
+        public override void Emit(string streamId, List<object> values, long? seqId = null)
         {
-            ProxyMessage item = base.generateProxyMessage(streamId, string.Empty, ProxyEvent.DEFAULT, values);
-            this.msgQueue.Enqueue(item);
-            if (this.msgQueue.Count >= SpoutContext.batchSize)
-            {
-                base.FlushMsgQueue();
-            }
-        }
-        public override void Emit(string streamId, List<object> values, long seqId)
-        {
-            ProxyMessage item = base.generateProxyMessage(streamId, seqId.ToString(), ProxyEvent.DEFAULT, values);
-            this.msgQueue.Enqueue(item);
-            if (this.msgQueue.Count >= SpoutContext.batchSize)
-            {
-                base.FlushMsgQueue();
-            }
+            base.CheckOutputSchema(streamId, values == null ? 0 : values.Count);
+            string msg = @"""command"": ""emit"", ""id"": ""{0}"", ""stream"": ""{1}"", ""tuple"": [{2}]";
+            Storm.SendMsgToParent("{" + string.Format(msg, seqId == null ? "" : seqId.ToString(), streamId, JsonConvert.SerializeObject(values)) + "}");
+
+            Storm.Sync();
         }
         public override void Emit(string streamId, IEnumerable<StormTuple> anchors, List<object> tuple)
         {
