@@ -53,7 +53,7 @@
     <Compile Include="PluginType.cs" />
     <Compile Include="BoltContext.cs" />
     <Compile Include="SpoutContext.cs" />
-    <Compile Include="Storm.cs" />
+    <Compile Include="ApacheStorm.cs" />
     <Compile Include="Command.cs" />
     <Compile Include="TopologyContext.cs" />
     <Compile Include="StormTuple.cs" />

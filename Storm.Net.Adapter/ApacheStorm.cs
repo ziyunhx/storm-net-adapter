@@ -8,7 +8,7 @@ using System.Text;
 
 namespace Storm
 {
-    public class Storm
+    public class ApacheStorm
     {
         public static Queue<Command> pendingTasks = new Queue<Command>();
 
@@ -18,14 +18,26 @@ namespace Storm
             TopologyContext context = null;
             Config config = new Config();
 
-            InitComponent(ref config, ref context);
+            Context.pluginType = PluginType.UNKNOW;
+            Type classType = createDelegate.Method.ReturnType;   
+            Type[] interfaces = classType.GetInterfaces();
 
-            if (createDelegate.GetType().BaseType == typeof(ISpout))
-                Context.pluginType = PluginType.SPOUT;
-            else if(createDelegate.GetType().BaseType == typeof(IBolt))
-                Context.pluginType = PluginType.BOLT;
-            else
-                Context.pluginType = PluginType.UNKNOW;
+            foreach (Type eachType in interfaces)
+            {
+                if (eachType == typeof(ISpout))
+                {
+                    Context.pluginType = PluginType.SPOUT;
+                    break;
+                }
+                else if (eachType == typeof(IBolt))
+                {
+                    Context.pluginType = PluginType.BOLT;
+                    break;
+                }
+            }
+
+
+            InitComponent(ref config, ref context);
 
 			PluginType pluginType = Context.pluginType;
 			Context.Logger.Info("LaunchPlugin, pluginType: {0}", new object[]
@@ -89,13 +101,13 @@ namespace Storm
             }
 
             var _conf = container["conf"];
-            if (_conf != null && _conf.GetType() == typeof(JContainer))
+            if (_conf != null && _conf.GetType().BaseType == typeof(JContainer))
             {
                 config = GetConfig(_conf as JContainer);
             }
 
             var _context = container["context"];
-            if (_context != null && _context.GetType() == typeof(JContainer))
+            if (_context != null && _context.GetType().BaseType == typeof(JContainer))
             {
                 context = GetContext(_context as JContainer);
             }
@@ -267,7 +279,7 @@ namespace Storm
 
             foreach (var item in configContainer)
             {
-                if (item.GetType().BaseType == typeof(JProperty))
+                if (item.GetType() == typeof(JProperty))
                 {
                     JProperty temp = item as JProperty;
 
@@ -286,15 +298,15 @@ namespace Storm
                 Dictionary<int, string> component = new Dictionary<int, string>();
 
                 var _taskId = contextContainer["taskid"];
-                if (_taskId.GetType().BaseType == typeof(JValue))
+                if (_taskId.GetType() == typeof(JValue))
                     Int32.TryParse((_taskId as JValue).Value.ToString(), out taskId);
 
                 var _component = contextContainer["task->component"];
-                if (_component != null && _component.GetType() == typeof(JContainer))
+                if (_component != null && _component.GetType().BaseType == typeof(JContainer))
                 {
                     foreach (var item in _component)
                     {
-                        if (item.GetType().BaseType == typeof(JProperty))
+                        if (item.GetType() == typeof(JProperty))
                         {
                             JProperty temp = item as JProperty;
 
@@ -332,7 +344,6 @@ namespace Storm
 			if (!(iPlugin is ISpout))
 			{
 				Context.Logger.Error("[Spout] newPlugin must return ISpout!");
-				//Context.Logger.Error("[Spout] newPlugin must return ISpout!");
 			}
 			this._spout = (ISpout)iPlugin;
 			Stopwatch stopwatch = new Stopwatch();
@@ -341,7 +352,7 @@ namespace Storm
                 try
                 {
                     stopwatch.Restart();
-                    Command command = Storm.ReadCommand();
+                    Command command = ApacheStorm.ReadCommand();
                     if (command.Name == "next")
                     {
                         this._spout.NextTuple();
@@ -361,7 +372,7 @@ namespace Storm
                         Context.Logger.Error("[Spout] unexpected message.");
                         //Context.Logger.Error("[Spout] unexpected message.");
                     }
-                    Storm.Sync();
+                    ApacheStorm.Sync();
                     stopwatch.Stop();
                 }
                 catch (Exception ex)
@@ -396,9 +407,9 @@ namespace Storm
 			while (true)
 			{
 				stopwatch.Restart();
-                StormTuple tuple = Storm.ReadTuple();
+                StormTuple tuple = ApacheStorm.ReadTuple();
                 if (tuple.IsHeartBeatTuple())
-                    Storm.Sync();
+                    ApacheStorm.Sync();
                 else
                 {
                     try

@@ -9,5 +9,10 @@ namespace Storm
             get;
             set;
         }
+
+        public Config()
+        {
+            StormConf = new Dictionary<string, object>();
+        }
     }
 }

@@ -20,9 +20,9 @@ namespace Storm
         {
             base.CheckOutputSchema(streamId, values == null ? 0 : values.Count);
             string msg = @"""command"": ""emit"", ""id"": ""{0}"", ""stream"": ""{1}"", ""tuple"": [{2}]";
-            Storm.SendMsgToParent("{" + string.Format(msg, seqId == null ? "" : seqId.ToString(), streamId, JsonConvert.SerializeObject(values)) + "}");
+            ApacheStorm.SendMsgToParent("{" + string.Format(msg, seqId == null ? "" : seqId.ToString(), streamId, JsonConvert.SerializeObject(values)) + "}");
 
-            Storm.Sync();
+            ApacheStorm.Sync();
         }
         public override void Emit(string streamId, IEnumerable<StormTuple> anchors, List<object> tuple)
         {

@@ -32,7 +32,7 @@ namespace Storm
 
             base.CheckOutputSchema(streamId, values == null ? 0 : values.Count);
             string msg = @"""command"": ""emit"", ""anchors"": ""{0}"", ""stream"": ""{1}"", ""tuple"": [{2}]";
-            Storm.SendMsgToParent("{" + string.Format(msg, JsonConvert.SerializeObject(tupleIds), streamId, JsonConvert.SerializeObject(values)) + "}");
+            ApacheStorm.SendMsgToParent("{" + string.Format(msg, JsonConvert.SerializeObject(tupleIds), streamId, JsonConvert.SerializeObject(values)) + "}");
         }
         public override void Ack(StormTuple tuple)
         {
@@ -40,7 +40,7 @@ namespace Storm
             {
                 Context.Logger.Error("[BoltContext.Ack()] nontransactional.ack.enabled is not enabled!");
             }
-            Storm.Ack(tuple);
+            ApacheStorm.Ack(tuple);
         }
         public override void Fail(StormTuple tuple)
         {
@@ -48,11 +48,12 @@ namespace Storm
             {
                 Context.Logger.Error("[BoltContext.Fail()] nontransactional.ack.enabled is not enabled!");
             }
-            Storm.Fail(tuple);
+            ApacheStorm.Fail(tuple);
         }
         internal BoltContext(bool enableAck = true)
         {
             this._enableAck = enableAck;
+            Context.pluginType = PluginType.BOLT;
         }
     }
 }

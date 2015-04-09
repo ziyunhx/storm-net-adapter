@@ -77,7 +77,7 @@ namespace StormSample1
         /// <param name="ctx">Context instance</param>
         /// <param name="parms">Parameters to initialize this spout/bolt</param>
         /// <returns></returns>
-        public static Counter Get(Context ctx, Dictionary<string, Object> parms)
+        public static Counter Get(Context ctx)
         {
             return new Counter(ctx);
         }
