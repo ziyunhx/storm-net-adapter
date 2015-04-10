@@ -91,6 +91,8 @@ namespace Storm
         {
             string message = ReadMsg();
 
+            Context.Logger.Info(message);
+
             JContainer container = JsonConvert.DeserializeObject(message) as JContainer;
 
             var _pidDir = container["pidDir"];
@@ -238,22 +240,22 @@ namespace Storm
 
         public static void ReportError(string message)
         {
-            SendMsgToParent("{\"command\": \"error\", \"msg\": " + message + "}");
+            SendMsgToParent("{\"command\": \"error\", \"msg\": \"" + message + "\"}");
         }
 
         public static void Ack(StormTuple tuple)
         {
-            SendMsgToParent("{\"command\": \"ack\", \"id\": " + tuple.GetTupleId() + "}");
+            SendMsgToParent("{\"command\": \"ack\", \"id\": \"" + tuple.GetTupleId() + "\"}");
         }
 
         public static void Fail(StormTuple tuple)
         {
-            SendMsgToParent("{\"command\": \"fail\", \"id\": " + tuple.GetTupleId() + "}");
+            SendMsgToParent("{\"command\": \"fail\", \"id\": \"" + tuple.GetTupleId() + "\"}");
         }
 
         public static void RpcMetrics(string name, string parms)
         {
-            SendMsgToParent("{\"command\": \"metrics\", \"name\": " + name + ", \"params\": " + parms + "}");
+            SendMsgToParent("{\"command\": \"metrics\", \"name\": \"" + name + "\", \"params\": \"" + parms + "\"}");
         }
 
         public static void Sync()
@@ -269,7 +271,7 @@ namespace Storm
         {
             Process currentProcess = Process.GetCurrentProcess();
             int pid = currentProcess.Id;
-            SendMsgToParent("{\"pid\": " + pid.ToString() + "}");
+            SendMsgToParent("{\"pid\": \"" + pid.ToString() + "\"}");
             File.WriteAllText(heartBeatDir + "/" + pid.ToString(), "");
         }
 
@@ -370,7 +372,6 @@ namespace Storm
                     else
                     {
                         Context.Logger.Error("[Spout] unexpected message.");
-                        //Context.Logger.Error("[Spout] unexpected message.");
                     }
                     ApacheStorm.Sync();
                     stopwatch.Stop();
@@ -400,7 +401,6 @@ namespace Storm
 			if (!(iPlugin is IBolt))
 			{
 				Context.Logger.Error("[Bolt] newPlugin must return IBolt!");
-				//Context.Logger.Error("[SetBolt] newPlugin must return IBolt!");
 			}
 			this._bolt = (IBolt)iPlugin;
 			Stopwatch stopwatch = new Stopwatch();

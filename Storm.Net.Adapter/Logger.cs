@@ -24,7 +24,7 @@
         }
         private void SendLog(string Message, int level = 2)
         {
-            ApacheStorm.SendMsgToParent("{\"command\": \"log\", \"msg\": " + Message + ", \"level\":" + level + "}");
+            ApacheStorm.SendMsgToParent("{\"command\": \"log\", \"msg\": \"" + Message + "\", \"level\":" + level + "}");
             ApacheStorm.Sync();
         }
     }
