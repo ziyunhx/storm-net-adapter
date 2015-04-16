@@ -11,7 +11,7 @@ namespace StormSample1
     public class Splitter : IBolt
     {
         private Context ctx;
-        private bool enableAck = false;
+        private bool enableAck = true;
         private int msgTimeoutSecs;
 
         private Random rnd = new Random();
@@ -33,7 +33,7 @@ namespace StormSample1
             // Demo how to get stormConf info
             if (Context.Config.StormConf.ContainsKey("topology.message.timeout.secs"))
             {
-                msgTimeoutSecs = (int)(Context.Config.StormConf["topology.message.timeout.secs"]);
+                msgTimeoutSecs = Convert.ToInt32(Context.Config.StormConf["topology.message.timeout.secs"]);
             }
             Context.Logger.Info("msgTimeoutSecs: {0}", msgTimeoutSecs);
         }

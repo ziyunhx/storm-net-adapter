@@ -35,9 +35,9 @@ namespace Storm
                     break;
                 }
             }
-
-
+            
             InitComponent(ref config, ref context);
+            Context.Config = config;
 
 			PluginType pluginType = Context.pluginType;
 			Context.Logger.Info("LaunchPlugin, pluginType: {0}", new object[]
@@ -90,8 +90,7 @@ namespace Storm
         public static void InitComponent(ref Config config, ref TopologyContext context)
         {
             string message = ReadMsg();
-
-            Context.Logger.Info(message);
+            //Context.Logger.Info(message);
 
             JContainer container = JsonConvert.DeserializeObject(message) as JContainer;
 
@@ -113,6 +112,8 @@ namespace Storm
             {
                 context = GetContext(_context as JContainer);
             }
+
+            //Context.Logger.Info("Finish InitComponent!");
         }
 
         public static Command ReadCommand()
@@ -221,7 +222,6 @@ namespace Storm
         public static string ReadMsg()
         {
             StringBuilder message = new StringBuilder();
-
             do
             {
                 string line = Console.ReadLine();
@@ -231,6 +231,7 @@ namespace Storm
                 if (line == "end")
                     break;
 
+                Context.Logger.Info(line);
                 message.AppendLine(line);
             }
             while (true);
@@ -271,7 +272,7 @@ namespace Storm
         {
             Process currentProcess = Process.GetCurrentProcess();
             int pid = currentProcess.Id;
-            SendMsgToParent("{\"pid\": \"" + pid.ToString() + "\"}");
+            SendMsgToParent("{\"pid\": " + pid.ToString() + "}");
             File.WriteAllText(heartBeatDir + "/" + pid.ToString(), "");
         }
 

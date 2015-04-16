@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using Storm;
+using HooLab.Runtime;
 
 namespace StormSample1
 {
@@ -12,21 +13,32 @@ namespace StormSample1
             {
                 string compName = args[0];
 
-                if ("generator".Equals(compName))
+                //Context.Logger.Info(RuntimeInfo.BaseDirectory);
+
+                //Context.Logger.Info(compName);
+
+                try
                 {
-                    ApacheStorm.LaunchPlugin(new newPlugin(Generator.Get));
+                    if ("generator".Equals(compName))
+                    {
+                        ApacheStorm.LaunchPlugin(new newPlugin(Generator.Get));
+                    }
+                    else if ("splitter".Equals(compName))
+                    {
+                        ApacheStorm.LaunchPlugin(new newPlugin(Splitter.Get));
+                    }
+                    else if ("counter".Equals(compName))
+                    {
+                        ApacheStorm.LaunchPlugin(new newPlugin(Counter.Get));
+                    }
+                    else
+                    {
+                        throw new Exception(string.Format("unexpected compName: {0}", compName));
+                    }
                 }
-                else if ("splitter".Equals(compName))
+                catch (Exception ex)
                 {
-                    ApacheStorm.LaunchPlugin(new newPlugin(Splitter.Get));
-                }
-                else if ("counter".Equals(compName))
-                {
-                    ApacheStorm.LaunchPlugin(new newPlugin(Counter.Get));
-                }
-                else
-                {
-                    throw new Exception(string.Format("unexpected compName: {0}", compName));
+                    Context.Logger.Info(ex.ToString());
                 }
             }
             else

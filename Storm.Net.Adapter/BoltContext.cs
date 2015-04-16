@@ -53,7 +53,6 @@ namespace Storm
         internal BoltContext(bool enableAck = true)
         {
             this._enableAck = enableAck;
-            Context.pluginType = PluginType.BOLT;
         }
     }
 }
