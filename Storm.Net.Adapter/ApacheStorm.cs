@@ -231,7 +231,7 @@ namespace Storm
                 if (line == "end")
                     break;
 
-                Context.Logger.Info(line);
+                //Context.Logger.Info(line);
                 message.AppendLine(line);
             }
             while (true);
@@ -272,8 +272,8 @@ namespace Storm
         {
             Process currentProcess = Process.GetCurrentProcess();
             int pid = currentProcess.Id;
-            SendMsgToParent("{\"pid\": " + pid.ToString() + "}");
             File.WriteAllText(heartBeatDir + "/" + pid.ToString(), "");
+            SendMsgToParent("{\"pid\": " + pid.ToString() + "}");            
         }
 
         private static Config GetConfig(JContainer configContainer)
