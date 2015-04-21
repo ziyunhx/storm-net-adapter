@@ -21,8 +21,8 @@ namespace Storm
             base.CheckOutputSchema(streamId, values == null ? 0 : values.Count);
             string msg = @"""command"": ""emit"", ""id"": ""{0}"", ""stream"": ""{1}"", ""tuple"": {2}";
             ApacheStorm.SendMsgToParent("{" + string.Format(msg, seqId == null ? "" : seqId.ToString(), streamId, JsonConvert.SerializeObject(values)) + "}");
-            ApacheStorm.Sync();
-            ApacheStorm.ReadTaskId();
+            //ApacheStorm.Sync();
+            //ApacheStorm.ReadTaskId();
         }
         public override void Emit(string streamId, IEnumerable<StormTuple> anchors, List<object> tuple)
         {

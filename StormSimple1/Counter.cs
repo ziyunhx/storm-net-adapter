@@ -13,7 +13,7 @@ namespace StormSample1
     {
         private Context ctx;
         private bool enableAck = true;
-        private int taskIndex = -1;
+        //private int taskIndex = -1;
 
         private Dictionary<string, int> counts = new Dictionary<string, int>();
 
@@ -50,11 +50,11 @@ namespace StormSample1
             Context.Logger.Info("Emit: {0}, count: {1}", word, count);
             this.ctx.Emit("default", new List<StormTuple> { tuple }, new List<object> { word, count });
 
-            if (enableAck)
-            {
-                Context.Logger.Info("Ack tuple: tupleId: {0}", tuple.GetTupleId());
-                this.ctx.Ack(tuple);
-            }
+            //if (enableAck)
+            //{
+            //    Context.Logger.Info("Ack tuple: tupleId: {0}", tuple.GetTupleId());
+            //    this.ctx.Ack(tuple);
+            //}
 
             Context.Logger.Info("Execute exit");
 

@@ -80,6 +80,12 @@ namespace Storm
             if (string.IsNullOrWhiteSpace(message))
                 return;
 
+            try
+            {
+                HooLab.Log.Logger.Error(message);
+            }
+            catch { }
+
             Console.WriteLine(message);
             Console.WriteLine("end");
         }
@@ -293,6 +299,12 @@ namespace Storm
                 if (line == "end")
                     break;
 
+                try
+                {
+                    HooLab.Log.Logger.Error(line);
+                }
+                catch { }
+
                 message.AppendLine(line);
             }
             while (true);
@@ -448,6 +460,8 @@ namespace Storm
 
     public class Bolt
     {
+        //public static StormTuple ANCHOR_TUPLE;
+
 		private newPlugin _createDelegate;
 		private IBolt _bolt;
 		private BoltContext _ctx;
@@ -473,11 +487,13 @@ namespace Storm
                 if (tuple.IsHeartBeatTuple())
                     ApacheStorm.Sync();
                 else
-                {
+                {                    
                     try
                     {
                         this._ctx.CheckInputSchema(tuple.GetSourceStreamId(), tuple.GetValues().Count);
                         tuple.FixValuesType(this._ctx._schemaByCSharp.InputStreamSchema[tuple.GetSourceStreamId()]);
+
+                        //ANCHOR_TUPLE = tuple;
 
                         this._bolt.Execute(tuple);                        
                         this._ctx.Ack(tuple);

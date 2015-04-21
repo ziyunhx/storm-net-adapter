@@ -23,6 +23,7 @@ namespace Storm
         public override void Emit(string streamId, IEnumerable<StormTuple> anchors, List<object> values)
         {
             List<string> tupleIds = new List<string>();
+
             if (anchors != null && anchors.Count<StormTuple>() > 0)
             {
                 tupleIds = (
@@ -31,9 +32,10 @@ namespace Storm
             }
 
             base.CheckOutputSchema(streamId, values == null ? 0 : values.Count);
-            string msg = @"""command"": ""emit"", ""anchors"": ""{0}"", ""stream"": ""{1}"", ""tuple"": {2}";
+            string msg = @"""command"": ""emit"", ""anchors"": {0}, ""stream"": ""{1}"", ""tuple"": {2}";
             ApacheStorm.SendMsgToParent("{" + string.Format(msg, JsonConvert.SerializeObject(tupleIds), streamId, JsonConvert.SerializeObject(values)) + "}");
-            ApacheStorm.ReadTaskId();
+            //ApacheStorm.Sync();
+            //ApacheStorm.ReadTaskId();
         }
         public override void Ack(StormTuple tuple)
         {

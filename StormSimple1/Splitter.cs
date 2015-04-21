@@ -53,24 +53,24 @@ namespace StormSample1
                 this.ctx.Emit("default", new List<StormTuple> { tuple }, new List<object> { word, word[0] });
             }
 
-            if (enableAck)
-            {
-                if (Sample(50)) // this is to demo how to fail tuple. We do it randomly
-                {
-                    Context.Logger.Info("fail tuple: tupleId: {0}", tuple.GetTupleId());
-                    this.ctx.Fail(tuple);
-                }
-                else
-                {
-                    if (Sample(50)) // this is to simulate timeout
-                    {
-                        Context.Logger.Info("sleep {0} seconds", msgTimeoutSecs + 1);
-                        Thread.Sleep((msgTimeoutSecs + 1) * 1000);
-                    }
-                    Context.Logger.Info("Ack tuple: tupleId: {0}", tuple.GetTupleId());
-                    this.ctx.Ack(tuple);
-                }
-            }
+            //if (enableAck)
+            //{
+            //    if (Sample(50)) // this is to demo how to fail tuple. We do it randomly
+            //    {
+            //        Context.Logger.Info("fail tuple: tupleId: {0}", tuple.GetTupleId());
+            //        this.ctx.Fail(tuple);
+            //    }
+            //    else
+            //    {
+            //        if (Sample(50)) // this is to simulate timeout
+            //        {
+            //            Context.Logger.Info("sleep {0} seconds", msgTimeoutSecs + 1);
+            //            Thread.Sleep((msgTimeoutSecs + 1) * 1000);
+            //        }
+            //        Context.Logger.Info("Ack tuple: tupleId: {0}", tuple.GetTupleId());
+            //        this.ctx.Ack(tuple);
+            //    }
+            //}
 
             Context.Logger.Info("Execute exit");
         }
