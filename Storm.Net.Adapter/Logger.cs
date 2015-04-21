@@ -24,9 +24,6 @@
         }
         private void SendLog(string Message, int level = 2)
         {
-            //Debug
-            HooLab.Log.Logger.Error(Message);
-
             ApacheStorm.SendMsgToParent("{\"command\": \"log\", \"msg\": \"" + Message + "\", \"level\":" + level + "}");
             ApacheStorm.Sync();
         }

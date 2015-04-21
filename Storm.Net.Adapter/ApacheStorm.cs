@@ -10,8 +10,8 @@ namespace Storm
 {
     public class ApacheStorm
     {
-        public static Queue<Command> pendingTasks = new Queue<Command>();
-
+        public static Queue<Command> pendingCommands = new Queue<Command>();
+        public static Queue<String> pendingTaskIds = new Queue<string>();
 
         public static void LaunchPlugin(newPlugin createDelegate)
 		{
@@ -90,7 +90,6 @@ namespace Storm
         public static void InitComponent(ref Config config, ref TopologyContext context)
         {
             string message = ReadMsg();
-            //Context.Logger.Info(message);
 
             JContainer container = JsonConvert.DeserializeObject(message) as JContainer;
 
@@ -112,33 +111,95 @@ namespace Storm
             {
                 context = GetContext(_context as JContainer);
             }
-
-            //Context.Logger.Info("Finish InitComponent!");
         }
 
         public static Command ReadCommand()
         {
-            if (pendingTasks.Count > 0)
-                return pendingTasks.Dequeue();
+            if (pendingCommands.Count > 0)
+                return pendingCommands.Dequeue();
             else
             {
                 do
                 {
                     string msg = ReadMsg();
-                    JContainer container = JsonConvert.DeserializeObject(msg) as JContainer;
 
-                    var _command = container["command"];
-                    if (_command != null && _command.GetType() == typeof(JValue))
+                    bool isTaskId = JsonConvert.DeserializeObject(msg).GetType() == typeof(JArray);
+                    if (isTaskId)
                     {
-                        string command = (_command as JValue).Value.ToString();
-                        string id = "";
+                        JArray container = JsonConvert.DeserializeObject(msg) as JArray;
 
-                        var _id = container["id"];
-                        if (_id != null && _id.GetType() == typeof(JValue))
+                        if (container != null && container.GetType() == typeof(JValue))
                         {
-                            id = (_id as JValue).Value.ToString();
+                            foreach (var item in container)
+                            {
+                                pendingTaskIds.Enqueue((item as JValue).Value.ToString());
+                            }
                         }
-                        return new Command(command, id);
+                    }
+                    else
+                    {
+                        JContainer container = JsonConvert.DeserializeObject(msg) as JContainer;
+
+                        var _command = container["command"];
+                        if (_command != null && _command.GetType() == typeof(JValue))
+                        {
+                            string command = (_command as JValue).Value.ToString();
+                            string id = "";
+
+                            var _id = container["id"];
+                            if (_id != null && _id.GetType() == typeof(JValue))
+                            {
+                                id = (_id as JValue).Value.ToString();
+                            }
+                            return new Command(command, id);
+                        }
+                    }
+                }
+                while (true);
+            }
+        }
+
+        public static string ReadTaskId()
+        {
+            if (pendingTaskIds.Count > 0)
+                return pendingTaskIds.Dequeue();
+            else
+            {
+                do
+                {
+                    string msg = ReadMsg();
+
+                    bool isTaskId = JsonConvert.DeserializeObject(msg).GetType() == typeof(JArray);
+                    if (!isTaskId)
+                    {
+                        JContainer container = JsonConvert.DeserializeObject(msg) as JContainer;
+
+                        var _command = container["command"];
+                        if (_command != null && _command.GetType() == typeof(JValue))
+                        {
+                            string command = (_command as JValue).Value.ToString();
+                            string id = "";
+
+                            var _id = container["id"];
+                            if (_id != null && _id.GetType() == typeof(JValue))
+                            {
+                                id = (_id as JValue).Value.ToString();
+                            }
+                            pendingCommands.Enqueue(new Command(command, id));
+                        }
+                    }
+                    else
+                    {
+                        JArray container = JsonConvert.DeserializeObject(msg) as JArray;
+
+                        if (container != null && container.GetType() == typeof(JValue))
+                        {
+                            foreach (var item in container)
+                            {
+                                pendingTaskIds.Enqueue((item as JValue).Value.ToString());
+                            }
+                            return pendingTaskIds.Dequeue();
+                        }
                     }
                 }
                 while (true);
@@ -171,7 +232,8 @@ namespace Storm
                     var _component = container["comp"];
                     if (_component != null && _component.GetType() == typeof(JValue))
                     {
-                        component = (_component as JValue).Value.ToString();
+                        if ((_component as JValue).Value != null)
+                            component = (_component as JValue).Value.ToString();
                     }
                 }
                 catch { }
@@ -203,7 +265,7 @@ namespace Storm
                     {
                         foreach (var item in _values as JArray)
                         {
-                            values.Add((item as JValue).Value);
+                            values.Add(JsonConvert.SerializeObject(item));
                         }
                     }
                 }
@@ -231,7 +293,6 @@ namespace Storm
                 if (line == "end")
                     break;
 
-                //Context.Logger.Info(line);
                 message.AppendLine(line);
             }
             while (true);
@@ -415,7 +476,10 @@ namespace Storm
                 {
                     try
                     {
-                        this._bolt.Execute(tuple);
+                        this._ctx.CheckInputSchema(tuple.GetSourceStreamId(), tuple.GetValues().Count);
+                        tuple.FixValuesType(this._ctx._schemaByCSharp.InputStreamSchema[tuple.GetSourceStreamId()]);
+
+                        this._bolt.Execute(tuple);                        
                         this._ctx.Ack(tuple);
                     }
                     catch (Exception ex)

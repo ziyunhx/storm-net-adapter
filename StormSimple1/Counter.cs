@@ -12,7 +12,7 @@ namespace StormSample1
     public class Counter : IBolt
     {
         private Context ctx;
-        private bool enableAck = false;
+        private bool enableAck = true;
         private int taskIndex = -1;
 
         private Dictionary<string, int> counts = new Dictionary<string, int>();
@@ -54,17 +54,6 @@ namespace StormSample1
             {
                 Context.Logger.Info("Ack tuple: tupleId: {0}", tuple.GetTupleId());
                 this.ctx.Ack(tuple);
-            }
-
-            // log some info to out file for bvt test validataion
-            if (taskIndex == 0) // For component with multiple parallism, only one of them need to log info 
-            {
-                string fileName = @"..\..\..\..\..\HelloWorldOutput" + Process.GetCurrentProcess().Id + ".txt";
-                FileStream fs = new FileStream(fileName, FileMode.Append);
-                using (StreamWriter writer = new StreamWriter(fs))
-                {
-                    writer.WriteLine("word: {0}, count: {1}", word, count);
-                }
             }
 
             Context.Logger.Info("Execute exit");

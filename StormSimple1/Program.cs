@@ -13,10 +13,6 @@ namespace StormSample1
             {
                 string compName = args[0];
 
-                //Context.Logger.Info(RuntimeInfo.BaseDirectory);
-
-                //Context.Logger.Info(compName);
-
                 try
                 {
                     if ("generator".Equals(compName))

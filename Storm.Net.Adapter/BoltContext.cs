@@ -31,8 +31,9 @@ namespace Storm
             }
 
             base.CheckOutputSchema(streamId, values == null ? 0 : values.Count);
-            string msg = @"""command"": ""emit"", ""anchors"": ""{0}"", ""stream"": ""{1}"", ""tuple"": [{2}]";
+            string msg = @"""command"": ""emit"", ""anchors"": ""{0}"", ""stream"": ""{1}"", ""tuple"": {2}";
             ApacheStorm.SendMsgToParent("{" + string.Format(msg, JsonConvert.SerializeObject(tupleIds), streamId, JsonConvert.SerializeObject(values)) + "}");
+            ApacheStorm.ReadTaskId();
         }
         public override void Ack(StormTuple tuple)
         {

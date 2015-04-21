@@ -1,3 +1,4 @@
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 
@@ -5,11 +6,23 @@ namespace Storm
 {
     public class StormTuple
     {
-        private List<object> values;
+        private List<object> values = new List<object>();
         private int taskId;
         private string streamId;
         private string component;
         private string tupleId;
+
+        public void FixValuesType(List<Type> types)
+        {
+            if(types == null || values.Count != types.Count)
+                return;
+
+            for (int i=0;i<types.Count;i++)
+            {
+                values[i] = JsonConvert.DeserializeObject(values[i].ToString(), types[i]);
+            }
+        }
+
         public StormTuple(List<object> tuple, int taskId, string streamId, string tupleId, string component)
         {
             this.values = tuple;

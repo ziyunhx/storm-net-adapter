@@ -112,19 +112,23 @@ namespace StormUnitTest
         [TestMethod]
         public void ReadTuple()
         {
-            string msg = 
-             @"{
-                    // The tuple's id - this is a string to support languages lacking 64-bit precision
-                    ""id"": ""-6955786537413359385"",
-                    // The id of the component that created this tuple
-                    ""comp"": ""1"",
-                    // The id of the stream this tuple was emitted to
-                    ""stream"": ""1"",
-                    // The id of the task that created this tuple
-                    ""task"": 9,
-                    // All the values in this tuple
-                    ""tuple"": [""snow white and the seven dwarfs"", ""field2"", 3]
-                }";
+            //string msg = 
+//             @"{
+//                    // The tuple's id - this is a string to support languages lacking 64-bit precision
+//                    ""id"": ""-6955786537413359385"",
+//                    // The id of the component that created this tuple
+//                    ""comp"": ""1"",
+//                    // The id of the stream this tuple was emitted to
+//                    ""stream"": ""1"",
+//                    // The id of the task that created this tuple
+//                    ""task"": 9,
+//                    // All the values in this tuple
+//                    ""tuple"": [""snow white and the seven dwarfs"", ""field2"", 3]
+//                }";
+
+            //string msg = @"{""comp"":null,""tuple"":[],""task"":-1,""stream"":""__heartbeat"",""id"":""-5080601110764446917""}";
+
+            string msg = @"{""comp"":""generator"",""tuple"":[[""snow white and the seven dwarfs""]],""task"":5,""stream"":""default"",""id"":""5544137608851549529""}";
 
             JContainer container = JsonConvert.DeserializeObject(msg) as JContainer;
 
@@ -149,7 +153,7 @@ namespace StormUnitTest
                 var _component = container["comp"];
                 if (_component != null && _component.GetType() == typeof(JValue))
                 {
-                    component = (_component as JValue).Value.ToString();
+                    component = (_component as JValue).Value == null ? "" : (_component as JValue).Value.ToString();
                 }
             }
             catch (Exception ex)
@@ -190,7 +194,7 @@ namespace StormUnitTest
                 {
                     foreach (var item in _values as JArray)
                     {
-                        values.Add((item as JValue).Value);
+                        values.Add(JsonConvert.SerializeObject(item));
                     }
                 }
             }
