@@ -12,8 +12,6 @@ namespace StormSample1
     public class Counter : IBolt
     {
         private Context ctx;
-        private bool enableAck = true;
-        //private int taskIndex = -1;
 
         private Dictionary<string, int> counts = new Dictionary<string, int>();
 
@@ -30,8 +28,6 @@ namespace StormSample1
             Dictionary<string, List<Type>> outputSchema = new Dictionary<string, List<Type>>();
             outputSchema.Add("default", new List<Type>() { typeof(string), typeof(int) });
             this.ctx.DeclareComponentSchema(new ComponentStreamSchema(inputSchema, outputSchema));
-
-            Context.Logger.Info("enableAck: {0}", enableAck);
         }
 
         /// <summary>
@@ -47,16 +43,10 @@ namespace StormSample1
             count++;
             counts[word] = count;
 
-            Context.Logger.Info("Emit: {0}, count: {1}", word, count);
+            Context.Logger.Info("Counter Emit: {0}, count: {1}", word, count);
             this.ctx.Emit("default", new List<StormTuple> { tuple }, new List<object> { word, count });
 
-            //if (enableAck)
-            //{
-            //    Context.Logger.Info("Ack tuple: tupleId: {0}", tuple.GetTupleId());
-            //    this.ctx.Ack(tuple);
-            //}
-
-            Context.Logger.Info("Execute exit");
+            Context.Logger.Info("Counter Execute exit");
 
         }
 

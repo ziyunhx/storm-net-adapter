@@ -7,20 +7,22 @@ namespace Storm
 {
     internal class BoltContext : Context
     {
-        private bool _enableAck;
-        public override void Emit(List<object> values)
+        public override void Emit(List<object> values, string taskId = null)
         {
-            this.Emit("default", values);
+            this.Emit("default", null, values, taskId);
         }
 
-        public override void Emit(string streamId, List<object> values, long? seqId = null)
+        public override void Emit(string streamId, List<object> values, string taskId = null)
         {
-            if (seqId != null)
-                Context.Logger.Error("[BoltContext] Only Non-Tx Spout can call this function!");
-            else
-                this.Emit(streamId, null, values);
+            this.Emit(streamId, null, values, taskId);
         }
-        public override void Emit(string streamId, IEnumerable<StormTuple> anchors, List<object> values)
+
+        public override void Emit(string streamId, List<object> values, long seqId, string taskId = null)
+        {
+            Context.Logger.Error("[BoltContext] Only Non-Tx Spout can call this function!");
+        }
+
+        public override void Emit(string streamId, IEnumerable<StormTuple> anchors, List<object> values, string taskId = null)
         {
             List<string> tupleIds = new List<string>();
 
@@ -32,30 +34,33 @@ namespace Storm
             }
 
             base.CheckOutputSchema(streamId, values == null ? 0 : values.Count);
-            string msg = @"""command"": ""emit"", ""anchors"": {0}, ""stream"": ""{1}"", ""tuple"": {2}";
-            ApacheStorm.SendMsgToParent("{" + string.Format(msg, JsonConvert.SerializeObject(tupleIds), streamId, JsonConvert.SerializeObject(values)) + "}");
-            //ApacheStorm.Sync();
-            //ApacheStorm.ReadTaskId();
+
+            if (string.IsNullOrWhiteSpace(taskId))
+            {
+                string msg = @"""command"": ""emit"", ""anchors"": {0}, ""stream"": ""{1}"", ""tuple"": {2}";
+                ApacheStorm.SendMsgToParent("{" + string.Format(msg, JsonConvert.SerializeObject(tupleIds), streamId, JsonConvert.SerializeObject(values)) + "}");
+            }
+            else
+            {
+                string msg = @"""command"": ""emit"", ""anchors"": {0}, ""stream"": ""{1}"", ""task"": {2}, ""tuple"": {3}";
+                ApacheStorm.SendMsgToParent("{" + string.Format(msg, JsonConvert.SerializeObject(tupleIds), streamId, taskId, JsonConvert.SerializeObject(values)) + "}");
+            }
+
+            ApacheStorm.ReadTaskId();
         }
+
         public override void Ack(StormTuple tuple)
         {
-            if (!this._enableAck)
-            {
-                Context.Logger.Error("[BoltContext.Ack()] nontransactional.ack.enabled is not enabled!");
-            }
             ApacheStorm.Ack(tuple);
         }
+
         public override void Fail(StormTuple tuple)
         {
-            if (!this._enableAck)
-            {
-                Context.Logger.Error("[BoltContext.Fail()] nontransactional.ack.enabled is not enabled!");
-            }
             ApacheStorm.Fail(tuple);
         }
-        internal BoltContext(bool enableAck = true)
+
+        internal BoltContext()
         {
-            this._enableAck = enableAck;
         }
     }
 }

@@ -10,11 +10,10 @@ namespace StormSample1
     /// </summary>
     public class Generator : ISpout
     {
-        private const int MAX_PENDING_TUPLE_NUM = 10;
+        private const int MAX_PENDING_TUPLE_NUM = 20;
 
         private Context ctx;
 
-        private bool enableAck = true;
         private long lastSeqId = 0;
         private Dictionary<long, string> cachedTuples = new Dictionary<long, string>();
 
@@ -35,8 +34,6 @@ namespace StormSample1
             Dictionary<string, List<Type>> outputSchema = new Dictionary<string, List<Type>>();
             outputSchema.Add("default", new List<Type>() { typeof(string) });
             this.ctx.DeclareComponentSchema(new ComponentStreamSchema(null, outputSchema));
-
-            Context.Logger.Info("enableAck: {0}", enableAck);
         }
 
         /// <summary>
@@ -50,31 +47,22 @@ namespace StormSample1
             Context.Logger.Info("NextTuple enter");
             string sentence;
 
-            if (enableAck)
+            if (cachedTuples.Count <= MAX_PENDING_TUPLE_NUM)
             {
-                if (cachedTuples.Count <= MAX_PENDING_TUPLE_NUM)
-                {
-                    lastSeqId++;
-                    sentence = sentences[rand.Next(0, sentences.Length - 1)];
-                    Context.Logger.Info("Emit: {0}, seqId: {1}", sentence, lastSeqId);
-                    this.ctx.Emit("default", new List<object>(){sentence}, lastSeqId);
-                    cachedTuples[lastSeqId] = sentence;
-                }
-                else
-                {
-                    // if have nothing to emit, then sleep for a little while to release CPU
-                    Thread.Sleep(50);
-                }
-                Context.Logger.Info("cached tuple num: {0}", cachedTuples.Count);
+                lastSeqId++;
+                sentence = sentences[rand.Next(0, sentences.Length - 1)];
+                Context.Logger.Info("Generator Emit: {0}, seqId: {1}", sentence, lastSeqId);
+                this.ctx.Emit("default", new List<object>() { sentence }, lastSeqId);
+                cachedTuples[lastSeqId] = sentence;
             }
             else
             {
-                sentence = sentences[rand.Next(0, sentences.Length - 1)];
-                Context.Logger.Info("Emit: {0}", sentence);
-                this.ctx.Emit(new List<object>(){sentence});
+                // if have nothing to emit, then sleep for a little while to release CPU
+                Thread.Sleep(50);
             }
+            Context.Logger.Info("cached tuple num: {0}", cachedTuples.Count);
 
-            Context.Logger.Info("NextTx exit");
+            Context.Logger.Info("Generator NextTx exit");
         }
 
         /// <summary>

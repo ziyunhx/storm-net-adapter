@@ -6,39 +6,50 @@ namespace Storm
 {
     internal class SpoutContext : Context
     {
-        private bool _enableAck;
-        public override void Emit(List<object> values)
-        {
-            if (this._enableAck)
-            {
-                Context.Logger.Error("[SpoutContext] Ack enabled, should call Emit() with seqId!");
-            }
-            this.Emit("default", values);
-        }
-
-        public override void Emit(string streamId, List<object> values, long? seqId = null)
-        {
-            base.CheckOutputSchema(streamId, values == null ? 0 : values.Count);
-            string msg = @"""command"": ""emit"", ""id"": ""{0}"", ""stream"": ""{1}"", ""tuple"": {2}";
-            ApacheStorm.SendMsgToParent("{" + string.Format(msg, seqId == null ? "" : seqId.ToString(), streamId, JsonConvert.SerializeObject(values)) + "}");
-            //ApacheStorm.Sync();
-            //ApacheStorm.ReadTaskId();
-        }
-        public override void Emit(string streamId, IEnumerable<StormTuple> anchors, List<object> tuple)
+        public override void Emit(List<object> values, string taskId = null)
         {
             Context.Logger.Error("[SpoutContext] Bolt can not call this function!");
         }
+
+        public override void Emit(string streamId, List<object> values, string taskId = null)
+        {
+            Context.Logger.Error("[SpoutContext] Bolt can not call this function!");
+        }
+
+        public override void Emit(string streamId, List<object> values, long seqId, string taskId = null)
+        {
+            base.CheckOutputSchema(streamId, values == null ? 0 : values.Count);
+
+            if (string.IsNullOrWhiteSpace(taskId))
+            {
+                string msg = @"""command"": ""emit"", ""id"": ""{0}"", ""stream"": ""{1}"", ""tuple"": {2}";
+                ApacheStorm.SendMsgToParent("{" + string.Format(msg, seqId.ToString(), streamId, JsonConvert.SerializeObject(values)) + "}");
+            }
+            else
+            {
+                string msg = @"""command"": ""emit"", ""id"": ""{0}"", ""stream"": ""{1}"", ""task"": {2}, ""tuple"": {3}";
+                ApacheStorm.SendMsgToParent("{" + string.Format(msg, seqId.ToString(), streamId, taskId, JsonConvert.SerializeObject(values)) + "}");
+            }
+            ApacheStorm.ReadTaskId();
+        }
+
+        public override void Emit(string streamId, IEnumerable<StormTuple> anchors, List<object> tuple, string taskId = null)
+        {
+            Context.Logger.Error("[SpoutContext] Bolt can not call this function!");
+        }
+
         public override void Ack(StormTuple tuple)
         {
             Context.Logger.Error("[SpoutContext] Bolt can not call this function!");
         }
+
         public override void Fail(StormTuple tuple)
         {
             Context.Logger.Error("[SpoutContext] Bolt can not call this function!");
         }
-        internal SpoutContext(bool enableAck = true)
+
+        internal SpoutContext()
         {
-            this._enableAck = enableAck;
         }
     }
 }

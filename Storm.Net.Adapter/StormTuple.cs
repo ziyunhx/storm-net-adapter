@@ -17,7 +17,7 @@ namespace Storm
             if(types == null || values.Count != types.Count)
                 return;
 
-            for (int i=0;i<types.Count;i++)
+            for (int i = 0; i < types.Count; i++)
             {
                 values[i] = JsonConvert.DeserializeObject(values[i].ToString(), types[i]);
             }

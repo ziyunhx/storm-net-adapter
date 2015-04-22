@@ -34,12 +34,12 @@ namespace StormSample1
                 }
                 catch (Exception ex)
                 {
-                    Context.Logger.Info(ex.ToString());
+                    Context.Logger.Error(ex.ToString());
                 }
             }
             else
             {
-                throw new Exception("Not support local model.");
+                Context.Logger.Error("Not support local model.");
             }
         }
     }

@@ -82,7 +82,7 @@ namespace Storm
 
             try
             {
-                HooLab.Log.Logger.Error(message);
+                HooLab.Log.Logger.Info(message);
             }
             catch { }
 
@@ -149,7 +149,7 @@ namespace Storm
                         var _command = container["command"];
                         if (_command != null && _command.GetType() == typeof(JValue))
                         {
-                            string command = (_command as JValue).Value.ToString();
+                            string name = (_command as JValue).Value.ToString();
                             string id = "";
 
                             var _id = container["id"];
@@ -157,7 +157,7 @@ namespace Storm
                             {
                                 id = (_id as JValue).Value.ToString();
                             }
-                            return new Command(command, id);
+                            return new Command(name, id);
                         }
                     }
                 }
@@ -301,7 +301,7 @@ namespace Storm
 
                 try
                 {
-                    HooLab.Log.Logger.Error(line);
+                    HooLab.Log.Logger.Info(line);
                 }
                 catch { }
 
@@ -460,8 +460,6 @@ namespace Storm
 
     public class Bolt
     {
-        //public static StormTuple ANCHOR_TUPLE;
-
 		private newPlugin _createDelegate;
 		private IBolt _bolt;
 		private BoltContext _ctx;
@@ -493,15 +491,13 @@ namespace Storm
                         this._ctx.CheckInputSchema(tuple.GetSourceStreamId(), tuple.GetValues().Count);
                         tuple.FixValuesType(this._ctx._schemaByCSharp.InputStreamSchema[tuple.GetSourceStreamId()]);
 
-                        //ANCHOR_TUPLE = tuple;
-
                         this._bolt.Execute(tuple);                        
                         this._ctx.Ack(tuple);
                     }
                     catch (Exception ex)
                     {
-                        Context.Logger.Error(ex.ToString());
                         this._ctx.Fail(tuple);
+                        Context.Logger.Error(ex.ToString());
                     }
                 }
 				stopwatch.Stop();

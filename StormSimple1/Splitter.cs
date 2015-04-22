@@ -11,7 +11,6 @@ namespace StormSample1
     public class Splitter : IBolt
     {
         private Context ctx;
-        private bool enableAck = true;
         private int msgTimeoutSecs;
 
         private Random rnd = new Random();
@@ -27,8 +26,6 @@ namespace StormSample1
             Dictionary<string, List<Type>> outputSchema = new Dictionary<string, List<Type>>();
             outputSchema.Add("default", new List<Type>() { typeof(string), typeof(char) });
             this.ctx.DeclareComponentSchema(new ComponentStreamSchema(inputSchema, outputSchema));
-
-            Context.Logger.Info("enableAck: {0}", enableAck);
 
             // Demo how to get stormConf info
             if (Context.Config.StormConf.ContainsKey("topology.message.timeout.secs"))
@@ -47,32 +44,17 @@ namespace StormSample1
             Context.Logger.Info("Execute enter");
 
             string sentence = tuple.GetString(0);
+
+
+            HooLab.Log.Logger.Debug(sentence);
+
             foreach (string word in sentence.Split(' '))
             {
-                Context.Logger.Info("Emit: {0}", word);
+                Context.Logger.Info("Splitter Emit: {0}", word);
                 this.ctx.Emit("default", new List<StormTuple> { tuple }, new List<object> { word, word[0] });
             }
 
-            //if (enableAck)
-            //{
-            //    if (Sample(50)) // this is to demo how to fail tuple. We do it randomly
-            //    {
-            //        Context.Logger.Info("fail tuple: tupleId: {0}", tuple.GetTupleId());
-            //        this.ctx.Fail(tuple);
-            //    }
-            //    else
-            //    {
-            //        if (Sample(50)) // this is to simulate timeout
-            //        {
-            //            Context.Logger.Info("sleep {0} seconds", msgTimeoutSecs + 1);
-            //            Thread.Sleep((msgTimeoutSecs + 1) * 1000);
-            //        }
-            //        Context.Logger.Info("Ack tuple: tupleId: {0}", tuple.GetTupleId());
-            //        this.ctx.Ack(tuple);
-            //    }
-            //}
-
-            Context.Logger.Info("Execute exit");
+            Context.Logger.Info("Splitter Execute exit");
         }
 
         /// <summary>
@@ -84,17 +66,6 @@ namespace StormSample1
         public static Splitter Get(Context ctx)
         {
             return new Splitter(ctx);
-        }
-
-        private bool Sample(int sampleRate)
-        {
-            bool result = false;
-            int n = rnd.Next(sampleRate);
-            if (n == 0)
-            {
-                result = true;
-            }
-            return result;
         }
     }
 }
