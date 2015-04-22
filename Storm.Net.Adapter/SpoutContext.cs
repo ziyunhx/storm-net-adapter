@@ -30,7 +30,7 @@ namespace Storm
                 string msg = @"""command"": ""emit"", ""id"": ""{0}"", ""stream"": ""{1}"", ""task"": {2}, ""tuple"": {3}";
                 ApacheStorm.SendMsgToParent("{" + string.Format(msg, seqId.ToString(), streamId, taskId, JsonConvert.SerializeObject(values)) + "}");
             }
-            ApacheStorm.ReadTaskId();
+            //ApacheStorm.ReadTaskId();
         }
 
         public override void Emit(string streamId, IEnumerable<StormTuple> anchors, List<object> tuple, string taskId = null)

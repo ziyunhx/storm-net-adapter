@@ -46,7 +46,7 @@ namespace Storm
                 ApacheStorm.SendMsgToParent("{" + string.Format(msg, JsonConvert.SerializeObject(tupleIds), streamId, taskId, JsonConvert.SerializeObject(values)) + "}");
             }
 
-            ApacheStorm.ReadTaskId();
+            //ApacheStorm.ReadTaskId();
         }
 
         public override void Ack(StormTuple tuple)
