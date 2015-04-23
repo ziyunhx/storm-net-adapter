@@ -1,7 +1,6 @@
 using Storm;
 using System;
 using System.Collections.Generic;
-using System.Threading;
 
 namespace StormSample1
 {
@@ -44,9 +43,6 @@ namespace StormSample1
             Context.Logger.Info("Execute enter");
 
             string sentence = tuple.GetString(0);
-
-
-            HooLab.Log.Logger.Debug(sentence);
 
             foreach (string word in sentence.Split(' '))
             {

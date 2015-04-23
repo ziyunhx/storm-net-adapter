@@ -24,13 +24,13 @@ namespace Storm
             {
                 string msg = @"""command"": ""emit"", ""id"": ""{0}"", ""stream"": ""{1}"", ""tuple"": {2}";
                 ApacheStorm.SendMsgToParent("{" + string.Format(msg, seqId.ToString(), streamId, JsonConvert.SerializeObject(values)) + "}");
+                ApacheStorm.ReadTaskId();
             }
             else
             {
                 string msg = @"""command"": ""emit"", ""id"": ""{0}"", ""stream"": ""{1}"", ""task"": {2}, ""tuple"": {3}";
                 ApacheStorm.SendMsgToParent("{" + string.Format(msg, seqId.ToString(), streamId, taskId, JsonConvert.SerializeObject(values)) + "}");
             }
-            //ApacheStorm.ReadTaskId();
         }
 
         public override void Emit(string streamId, IEnumerable<StormTuple> anchors, List<object> tuple, string taskId = null)

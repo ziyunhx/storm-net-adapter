@@ -25,12 +25,6 @@
         private void SendLog(string Message, int level = 2)
         {
             ApacheStorm.SendMsgToParent("{\"command\": \"log\", \"msg\": \"" + Message + "\", \"level\":" + level + "}");
-
-            try
-            {
-                HooLab.Log.Logger.Warn(Message);
-            }
-            catch { }
         }
 
         private string FromatMessage(string Message, params object[] args)

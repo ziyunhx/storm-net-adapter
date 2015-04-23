@@ -7,7 +7,6 @@ namespace Storm
     public abstract class Context
     {
         public static PluginType pluginType;
-        internal Stopwatch batchProcessWatch = new Stopwatch();
         internal ComponentStreamSchema _schemaByCSharp;
         public static Logger Logger = new Logger();
 

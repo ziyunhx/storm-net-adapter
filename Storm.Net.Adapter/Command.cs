@@ -1,4 +1,6 @@
-﻿namespace Storm
+﻿using System.Collections.Generic;
+
+namespace Storm
 {
     public class Command
     {
@@ -11,10 +13,12 @@
         /// </summary>
         public string Id { set; get; }
 
-        public Command(string command, string id = "")
-        {
-            this.Name = command;
-            this.Id = id;
-        }
+        public string Component { set; get; }
+
+        public string StreamId { set; get; }
+
+        public int TaskId { set; get; }
+
+        public List<object> Tuple { set; get; }
     }
 }

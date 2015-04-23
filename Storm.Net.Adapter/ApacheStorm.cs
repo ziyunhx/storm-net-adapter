@@ -80,12 +80,6 @@ namespace Storm
             if (string.IsNullOrWhiteSpace(message))
                 return;
 
-            try
-            {
-                HooLab.Log.Logger.Info(message);
-            }
-            catch { }
-
             Console.WriteLine(message);
             Console.WriteLine("end");
         }
@@ -134,34 +128,79 @@ namespace Storm
                     {
                         JArray container = JsonConvert.DeserializeObject(msg) as JArray;
 
-                        if (container != null && container.GetType() == typeof(JValue))
+                        if (container == null || container.Count == 0)
+                            pendingTaskIds.Enqueue(" ");
+                        else
                         {
-                            foreach (var item in container)
-                            {
-                                pendingTaskIds.Enqueue((item as JValue).Value.ToString());
-                            }
+                            pendingTaskIds.Enqueue((container[0] as JValue).Value.ToString());
                         }
                     }
                     else
                     {
-                        JContainer container = JsonConvert.DeserializeObject(msg) as JContainer;
-
-                        var _command = container["command"];
-                        if (_command != null && _command.GetType() == typeof(JValue))
-                        {
-                            string name = (_command as JValue).Value.ToString();
-                            string id = "";
-
-                            var _id = container["id"];
-                            if (_id != null && _id.GetType() == typeof(JValue))
-                            {
-                                id = (_id as JValue).Value.ToString();
-                            }
-                            return new Command(name, id);
-                        }
+                        return ConvertCommand(msg);
                     }
                 }
                 while (true);
+            }
+        }
+
+        private static Command ConvertCommand(string msg)
+        {
+            JContainer container = JsonConvert.DeserializeObject(msg) as JContainer;
+            var _command = container["command"];
+            if (_command != null && _command.GetType() == typeof(JValue))
+            {
+                string name = (_command as JValue).Value.ToString();
+                string id = "";
+
+                var _id = container["id"];
+                if (_id != null && _id.GetType() == typeof(JValue))
+                {
+                    id = (_id as JValue).Value.ToString();
+                }
+                return new Command() { Id = id, Name = name };
+            }
+            else
+            {
+                int taskId = -1;
+                string streamId = "", id = "", component = "";
+                List<object> tuple = new List<object>();
+
+                var _tupleId = container["id"];
+                if (_tupleId != null && _tupleId.GetType() == typeof(JValue))
+                {
+                    id = (_tupleId as JValue).Value.ToString();
+                }
+
+                var _component = container["comp"];
+                if (_component != null && _component.GetType() == typeof(JValue))
+                {
+                    if ((_component as JValue).Value != null)
+                        component = (_component as JValue).Value.ToString();
+                }
+
+                var _streamId = container["stream"];
+                if (_streamId != null && _streamId.GetType() == typeof(JValue))
+                {
+                    streamId = (_streamId as JValue).Value.ToString();
+                }
+
+                var _taskId = container["task"];
+                if (_taskId != null && _taskId.GetType() == typeof(JValue))
+                {
+                    Int32.TryParse((_taskId as JValue).Value.ToString(), out taskId);
+                }
+
+                var _values = container["tuple"];
+                if (_values != null && _values.GetType() == typeof(JArray))
+                {
+                    foreach (var item in _values as JArray)
+                    {
+                        tuple.Add(JsonConvert.SerializeObject(item));
+                    }
+                }
+
+                return new Command() { Id = id, Component = component, StreamId = streamId, TaskId = taskId, Tuple = tuple };
             }
         }
 
@@ -178,34 +217,16 @@ namespace Storm
                     bool isTaskId = JsonConvert.DeserializeObject(msg).GetType() == typeof(JArray);
                     if (!isTaskId)
                     {
-                        JContainer container = JsonConvert.DeserializeObject(msg) as JContainer;
-
-                        var _command = container["command"];
-                        if (_command != null && _command.GetType() == typeof(JValue))
-                        {
-                            string command = (_command as JValue).Value.ToString();
-                            string id = "";
-
-                            var _id = container["id"];
-                            if (_id != null && _id.GetType() == typeof(JValue))
-                            {
-                                id = (_id as JValue).Value.ToString();
-                            }
-                            pendingCommands.Enqueue(new Command(command, id));
-                        }
+                        pendingCommands.Enqueue(ConvertCommand(msg));
                     }
                     else
                     {
                         JArray container = JsonConvert.DeserializeObject(msg) as JArray;
-
-                        if (container != null && container.GetType() == typeof(JValue))
-                        {
-                            foreach (var item in container)
-                            {
-                                pendingTaskIds.Enqueue((item as JValue).Value.ToString());
-                            }
-                            return pendingTaskIds.Dequeue();
-                        }
+                        
+                        if (container == null || container.Count == 0) //will be null at the end of bolt.
+                            return "";
+                        else
+                            return (container[0] as JValue).Value.ToString();
                     }
                 }
                 while (true);
@@ -214,73 +235,8 @@ namespace Storm
 
         public static StormTuple ReadTuple()
         {
-            do
-            {
-                string msg = ReadMsg();
-                JContainer container = JsonConvert.DeserializeObject(msg) as JContainer;
-
-                int taskId = -1;
-                string streamId = "", tupleId = "", component = "";
-                List<object> values = new List<object>();
-
-                try
-                {
-                    var _tupleId = container["id"];
-                    if (_tupleId != null && _tupleId.GetType() == typeof(JValue))
-                    {
-                        tupleId = (_tupleId as JValue).Value.ToString();
-                    }
-                }
-                catch { }
-
-                try
-                {
-                    var _component = container["comp"];
-                    if (_component != null && _component.GetType() == typeof(JValue))
-                    {
-                        if ((_component as JValue).Value != null)
-                            component = (_component as JValue).Value.ToString();
-                    }
-                }
-                catch { }
-
-                try
-                {
-                    var _streamId = container["stream"];
-                    if (_streamId != null && _streamId.GetType() == typeof(JValue))
-                    {
-                        streamId = (_streamId as JValue).Value.ToString();
-                    }
-                }
-                catch { }
-
-                try
-                {
-                    var _taskId = container["task"];
-                    if (_taskId != null && _taskId.GetType() == typeof(JValue))
-                    {
-                        Int32.TryParse((_taskId as JValue).Value.ToString(), out taskId);
-                    }
-                }
-                catch { }
-
-                try
-                {
-                    var _values = container["tuple"];
-                    if (_values != null && _values.GetType() == typeof(JArray))
-                    {
-                        foreach (var item in _values as JArray)
-                        {
-                            values.Add(JsonConvert.SerializeObject(item));
-                        }
-                    }
-                }
-                catch { }
-
-                if (!string.IsNullOrWhiteSpace(tupleId))
-                    return new StormTuple(values, taskId, streamId, tupleId, component);
-            }
-            while (true);
+            Command command = ReadCommand();
+            return new StormTuple(command.Tuple, command.TaskId, command.StreamId, command.Id, command.Component);
         }
 
         /// <summary>
@@ -298,12 +254,6 @@ namespace Storm
 
                 if (line == "end")
                     break;
-
-                try
-                {
-                    HooLab.Log.Logger.Info(line);
-                }
-                catch { }
 
                 message.AppendLine(line);
             }

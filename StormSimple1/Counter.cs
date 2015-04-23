@@ -1,8 +1,6 @@
 using Storm;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.IO;
 
 namespace StormSample1
 {
@@ -47,7 +45,6 @@ namespace StormSample1
             this.ctx.Emit("default", new List<StormTuple> { tuple }, new List<object> { word, count });
 
             Context.Logger.Info("Counter Execute exit");
-
         }
 
         /// <summary>
