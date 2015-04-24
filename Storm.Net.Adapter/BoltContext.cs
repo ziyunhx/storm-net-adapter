@@ -12,6 +12,11 @@ namespace Storm
             this.Emit("default", null, values, taskId);
         }
 
+        public override void Emit(IEnumerable<StormTuple> anchors, List<object> values, string taskId = null)
+        {
+            this.Emit("default", anchors, values, taskId);
+        }
+
         public override void Emit(string streamId, List<object> values, string taskId = null)
         {
             this.Emit(streamId, null, values, taskId);

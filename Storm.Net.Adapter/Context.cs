@@ -17,6 +17,7 @@ namespace Storm
         }
 
         public abstract void Emit(List<object> values, string taskId = null);
+        public abstract void Emit(IEnumerable<StormTuple> anchors, List<object> values, string taskId = null);
         public abstract void Emit(string streamId, List<object> values, string taskId = null);
         public abstract void Emit(string streamId, List<object> values, long seqId, string taskId = null);
         public abstract void Emit(string streamId, IEnumerable<StormTuple> anchors, List<object> values, string taskId = null);

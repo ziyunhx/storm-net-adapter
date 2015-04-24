@@ -11,6 +11,11 @@ namespace Storm
             Context.Logger.Error("[SpoutContext] Bolt can not call this function!");
         }
 
+        public override void Emit(IEnumerable<StormTuple> anchors, List<object> values, string taskId = null)
+        {
+            Context.Logger.Error("[SpoutContext] Bolt can not call this function!");
+        }
+
         public override void Emit(string streamId, List<object> values, string taskId = null)
         {
             Context.Logger.Error("[SpoutContext] Bolt can not call this function!");
