@@ -17,6 +17,11 @@ namespace Storm
             this.Emit("default", anchors, values, taskId);
         }
 
+        public override void Emit(List<object> values, long seqId, string taskId = null)
+        {
+            Context.Logger.Error("[BoltContext] Only Non-Tx Spout can call this function!");
+        }
+
         public override void Emit(string streamId, List<object> values, string taskId = null)
         {
             this.Emit(streamId, null, values, taskId);
