@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace Storm
 {
@@ -10,7 +9,9 @@ namespace Storm
         private Dictionary<string, int> _index = new Dictionary<string, int>();
         public Fields(params string[] fields)
         {
-            this.Init(fields.ToList<string>());
+            List<string> _fields = new List<string>();
+            _fields.AddRange(fields);
+            this.Init(_fields);
         }
         public Fields(List<string> inputFields)
         {

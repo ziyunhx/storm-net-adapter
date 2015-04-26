@@ -77,7 +77,7 @@ namespace Storm
         /// <param name="message">stdout</param>
         public static void SendMsgToParent(string message)
         {
-            if (string.IsNullOrWhiteSpace(message))
+            if (string.IsNullOrEmpty(message))
                 return;
 
             Console.WriteLine(message);
@@ -249,7 +249,7 @@ namespace Storm
             do
             {
                 string line = Console.ReadLine();
-                if (string.IsNullOrWhiteSpace(line))
+                if (string.IsNullOrEmpty(line))
                     Context.Logger.Error("Read EOF from stdin");
 
                 if (line == "end")
@@ -377,7 +377,7 @@ namespace Storm
 			{
                 try
                 {
-                    stopwatch.Restart();
+                    stopwatch.Start();
                     Command command = ApacheStorm.ReadCommand();
                     if (command.Name == "next")
                     {
@@ -430,7 +430,7 @@ namespace Storm
 			Stopwatch stopwatch = new Stopwatch();
 			while (true)
 			{
-				stopwatch.Restart();
+				stopwatch.Start();
                 StormTuple tuple = ApacheStorm.ReadTuple();
                 if (tuple.IsHeartBeatTuple())
                     ApacheStorm.Sync();

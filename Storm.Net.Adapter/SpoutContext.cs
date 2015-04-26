@@ -11,7 +11,7 @@ namespace Storm
             Context.Logger.Error("[SpoutContext] Bolt can not call this function!");
         }
 
-        public override void Emit(IEnumerable<StormTuple> anchors, List<object> values, string taskId = null)
+        public override void Emit(List<StormTuple> anchors, List<object> values, string taskId = null)
         {
             Context.Logger.Error("[SpoutContext] Bolt can not call this function!");
         }
@@ -30,7 +30,7 @@ namespace Storm
         {
             base.CheckOutputSchema(streamId, values == null ? 0 : values.Count);
 
-            if (string.IsNullOrWhiteSpace(taskId))
+            if (string.IsNullOrEmpty(taskId))
             {
                 string msg = @"""command"": ""emit"", ""id"": ""{0}"", ""stream"": ""{1}"", ""tuple"": {2}";
                 ApacheStorm.SendMsgToParent("{" + string.Format(msg, seqId.ToString(), streamId, JsonConvert.SerializeObject(values)) + "}");
@@ -43,7 +43,7 @@ namespace Storm
             }
         }
 
-        public override void Emit(string streamId, IEnumerable<StormTuple> anchors, List<object> tuple, string taskId = null)
+        public override void Emit(string streamId, List<StormTuple> anchors, List<object> tuple, string taskId = null)
         {
             Context.Logger.Error("[SpoutContext] Bolt can not call this function!");
         }

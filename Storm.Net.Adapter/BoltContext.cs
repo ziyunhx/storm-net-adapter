@@ -1,7 +1,5 @@
 using Newtonsoft.Json;
-using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace Storm
 {
@@ -12,7 +10,7 @@ namespace Storm
             this.Emit("default", null, values, taskId);
         }
 
-        public override void Emit(IEnumerable<StormTuple> anchors, List<object> values, string taskId = null)
+        public override void Emit(List<StormTuple> anchors, List<object> values, string taskId = null)
         {
             this.Emit("default", anchors, values, taskId);
         }
@@ -32,20 +30,21 @@ namespace Storm
             Context.Logger.Error("[BoltContext] Only Non-Tx Spout can call this function!");
         }
 
-        public override void Emit(string streamId, IEnumerable<StormTuple> anchors, List<object> values, string taskId = null)
+        public override void Emit(string streamId, List<StormTuple> anchors, List<object> values, string taskId = null)
         {
             List<string> tupleIds = new List<string>();
 
-            if (anchors != null && anchors.Count<StormTuple>() > 0)
+            if (anchors != null && anchors.Count > 0)
             {
-                tupleIds = (
-                    from p in anchors
-                    select p.GetTupleId()).ToList<string>();
+                foreach (var anchor in anchors)
+                {
+                    tupleIds.Add(anchor.GetTupleId());
+                }
             }
 
             base.CheckOutputSchema(streamId, values == null ? 0 : values.Count);
 
-            if (string.IsNullOrWhiteSpace(taskId))
+            if (string.IsNullOrEmpty(taskId))
             {
                 string msg = @"""command"": ""emit"", ""anchors"": {0}, ""stream"": ""{1}"", ""tuple"": {2}";
                 ApacheStorm.SendMsgToParent("{" + string.Format(msg, JsonConvert.SerializeObject(tupleIds), streamId, JsonConvert.SerializeObject(values)) + "}");

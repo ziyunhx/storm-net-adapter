@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace Storm
 {
@@ -43,7 +42,7 @@ namespace Storm
                 {
                 "-"
                 }, StringSplitOptions.RemoveEmptyEntries);
-            this._topologyName = (array.Any<string>() ? array[0] : "");
+            this._topologyName = (array.Length > 0 ? array[0] : "");
         }
         public TopologyContext(int taskId, string topologyId, Dictionary<int, string> tasktoComponent)
             : this(taskId, topologyId, tasktoComponent, null)
