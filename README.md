@@ -1,9 +1,7 @@
 Storm.Net.Adapter
 ======
 
-.. image:: https://travis-ci.org/ziyunhx/storm-net-adapter.svg?branch=master
-   :target: https://travis-ci.org/ziyunhx/storm-net-adapter
-   :alt: Build Status
+![Build Status](https://travis-ci.org/ziyunhx/storm-net-adapter.svg?branch=master)
 
 Overview
 ========
