@@ -7,7 +7,7 @@ Overview
 ========
 
 Storm.Net.Adapter is a csharp adapter for apache storm. Storm is a distributed realtime computation system.
-For more information, please check the storm homepage and my personal bolg at: [storm](http://storm.apache.org/ "storm"), [The NewIdea](http://bolg.tnidea.com "The NewIdea").
+For more information, please check the storm homepage and my personal bolg at: [storm](http://storm.apache.org/ "storm"), [The NewIdea](http://blog.tnidea.com/ "The NewIdea").
 
 Requirements
 ============
@@ -21,7 +21,7 @@ Requirements
 Releases
 ========
 
-You can download the latest stable and development releases from: [releases](https://github.com/ziyunhx/storm-net-adapter/releasesiyunhx/storm-net-adapter/releases "releases").
+You can download the latest stable and development releases from: [releases](https://github.com/ziyunhx/storm-net-adapter/releases "releases").
 
 
 Getting started
