@@ -19,7 +19,8 @@ namespace Storm
 
             for (int i = 0; i < types.Count; i++)
             {
-                values[i] = JsonConvert.DeserializeObject(values[i].ToString(), types[i]);
+                values[i] = DefaultSerializer.CSharpBytesToObject(JsonConvert.DeserializeObject<byte[]>(values[i].ToString()), types[i]);
+                //values[i] = JsonConvert.DeserializeObject(values[i].ToString(), types[i]);
             }
         }
 

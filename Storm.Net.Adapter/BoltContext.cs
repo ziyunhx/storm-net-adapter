@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Storm
 {
-    internal class BoltContext : Context
+    public class BoltContext : Context
     {
         public override void Emit(List<object> values, string taskId = null)
         {
@@ -67,7 +67,7 @@ namespace Storm
             ApacheStorm.Fail(tuple);
         }
 
-        internal BoltContext()
+        public BoltContext()
         {
         }
     }

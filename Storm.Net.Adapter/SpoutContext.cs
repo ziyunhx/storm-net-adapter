@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace Storm
 {
-    internal class SpoutContext : Context
+    public class SpoutContext : Context
     {
         public override void Emit(List<object> values, string taskId = null)
         {
@@ -58,7 +58,7 @@ namespace Storm
             Context.Logger.Error("[SpoutContext] Bolt can not call this function!");
         }
 
-        internal SpoutContext()
+        public SpoutContext()
         {
         }
     }

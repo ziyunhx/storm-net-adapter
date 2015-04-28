@@ -10,6 +10,7 @@ namespace Storm
 {
     public class ApacheStorm
     {
+        public static Context ctx;
         public static Queue<Command> pendingCommands = new Queue<Command>();
         public static Queue<String> pendingTaskIds = new Queue<string>();
 
@@ -80,6 +81,7 @@ namespace Storm
             if (string.IsNullOrEmpty(message))
                 return;
 
+            Console.OutputEncoding = Encoding.UTF8;
             Console.WriteLine(message);
             Console.WriteLine("end");
         }
@@ -194,9 +196,15 @@ namespace Storm
                 var _values = container["tuple"];
                 if (_values != null && _values.GetType() == typeof(JArray))
                 {
-                    foreach (var item in _values as JArray)
+                    JArray values = _values as JArray;
+                    if (values.Count > 0)
                     {
-                        tuple.Add(JsonConvert.SerializeObject(item));
+                        ApacheStorm.ctx.CheckInputSchema(streamId, values.Count);
+                        for (int i = 0; i < values.Count; i++)
+                        {
+                            Type type = ApacheStorm.ctx._schemaByCSharp.InputStreamSchema[streamId][i];                            
+                            tuple.Add(values[i].ToObject(type));                            
+                        }
                     }
                 }
 
@@ -357,7 +365,6 @@ namespace Storm
     {
 		private newPlugin _createDelegate;
 		private ISpout _spout;
-		private SpoutContext _ctx;
         public Spout(newPlugin createDelegate)
 		{
 			this._createDelegate = createDelegate;
@@ -365,8 +372,8 @@ namespace Storm
 		public void Launch()
 		{
 			Context.Logger.Info("[Spout] Launch ...");
-			this._ctx = new SpoutContext();
-			IPlugin iPlugin = this._createDelegate(this._ctx);
+            ApacheStorm.ctx = new SpoutContext();
+            IPlugin iPlugin = this._createDelegate(ApacheStorm.ctx);
 			if (!(iPlugin is ISpout))
 			{
 				Context.Logger.Error("[Spout] newPlugin must return ISpout!");
@@ -412,7 +419,7 @@ namespace Storm
     {
 		private newPlugin _createDelegate;
 		private IBolt _bolt;
-		private BoltContext _ctx;
+		
 		public Bolt(newPlugin createDelegate)
 		{
 			this._createDelegate = createDelegate;
@@ -420,8 +427,8 @@ namespace Storm
 		public void Launch()
 		{
 			Context.Logger.Info("[Bolt] Launch ...");
-			this._ctx = new BoltContext();
-			IPlugin iPlugin = this._createDelegate(this._ctx);
+            ApacheStorm.ctx = new BoltContext();
+            IPlugin iPlugin = this._createDelegate(ApacheStorm.ctx);
 			if (!(iPlugin is IBolt))
 			{
 				Context.Logger.Error("[Bolt] newPlugin must return IBolt!");
@@ -438,15 +445,12 @@ namespace Storm
                 {                    
                     try
                     {
-                        this._ctx.CheckInputSchema(tuple.GetSourceStreamId(), tuple.GetValues().Count);
-                        tuple.FixValuesType(this._ctx._schemaByCSharp.InputStreamSchema[tuple.GetSourceStreamId()]);
-
-                        this._bolt.Execute(tuple);                        
-                        this._ctx.Ack(tuple);
+                        this._bolt.Execute(tuple);
+                        ApacheStorm.ctx.Ack(tuple);
                     }
                     catch (Exception ex)
                     {
-                        this._ctx.Fail(tuple);
+                        ApacheStorm.ctx.Fail(tuple);
                         Context.Logger.Error(ex.ToString());
                     }
                 }
