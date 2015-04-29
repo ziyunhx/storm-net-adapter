@@ -254,9 +254,24 @@ namespace Storm
         public static string ReadMsg()
         {
             StringBuilder message = new StringBuilder();
+            Stream inputStream = Console.OpenStandardInput();
+
             do
             {
-                string line = Console.ReadLine();
+                List<byte> bytes = new List<byte>();
+                do
+                {
+                    byte[] _bytes = new byte[1];
+                    int outputLength = inputStream.Read(_bytes, 0, 1);                    
+                    if (outputLength < 1 || _bytes[0] == 10)
+                        break;
+
+                    bytes.AddRange(_bytes);
+                }
+                while (true);
+
+                string line = Encoding.UTF8.GetString(bytes.ToArray());
+
                 if (string.IsNullOrEmpty(line))
                     Context.Logger.Error("Read EOF from stdin");
 
