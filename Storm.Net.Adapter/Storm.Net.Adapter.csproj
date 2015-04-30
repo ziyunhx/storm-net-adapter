@@ -45,14 +45,11 @@
     <Compile Include="Fields.cs" />
     <Compile Include="IBolt.cs" />
     <Compile Include="IPlugin.cs" />
-    <Compile Include="ISerializer.cs" />
     <Compile Include="ISpout.cs" />
     <Compile Include="Logger.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="PluginType.cs" />
     <Compile Include="BoltContext.cs" />
-    <Compile Include="JsonSerializer.cs" />
-    <Compile Include="DefaultSerializer.cs" />
     <Compile Include="SpoutContext.cs" />
     <Compile Include="ApacheStorm.cs" />
     <Compile Include="Command.cs" />

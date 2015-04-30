@@ -7,7 +7,7 @@ using System.Text;
 
 namespace Storm
 {
-    public class DefaultSerializer : ISerializer
+    public class GzipSerializer : ISerializer
     {
         private static readonly BinaryFormatter binaryFormatter = new BinaryFormatter();
         private static readonly Type ByteArrayType = typeof(byte[]);
@@ -15,12 +15,12 @@ namespace Storm
 
         public List<byte[]> Serialize(List<object> dataList)
         {
-            return dataList.Select((object t, int i) => DefaultSerializer.CSharpObjectToBytes(t, typeof(object))).ToList<byte[]>();
+            return dataList.Select((object t, int i) => GzipSerializer.CSharpObjectToBytes(t, typeof(object))).ToList<byte[]>();
         }
 
         public List<object> Deserialize(List<byte[]> dataList, List<Type> targetTypes)
         {
-            return dataList.Select((byte[] t, int i) => DefaultSerializer.CSharpBytesToObject(t, targetTypes[i])).ToList<object>();
+            return dataList.Select((byte[] t, int i) => GzipSerializer.CSharpBytesToObject(t, targetTypes[i])).ToList<object>();
         }
 
         public static object CSharpBytesToObject(byte[] bytes, Type type)
@@ -33,7 +33,7 @@ namespace Storm
             {
                 return null;
             }
-            if (type == DefaultSerializer.ByteArrayType)
+            if (type == GzipSerializer.ByteArrayType)
             {
                 return bytes;
             }
@@ -98,15 +98,15 @@ namespace Storm
             }
 
             MemoryStream serializationStream = new MemoryStream(bytes, false);
-            return DefaultSerializer.binaryFormatter.Deserialize(serializationStream);
+            return GzipSerializer.binaryFormatter.Deserialize(serializationStream);
         }
         public static byte[] CSharpObjectToBytes(object obj, Type type)
         {
             if (obj == null)
             {
-                return DefaultSerializer.EmptyArray;
+                return GzipSerializer.EmptyArray;
             }
-            if (type == DefaultSerializer.ByteArrayType)
+            if (type == GzipSerializer.ByteArrayType)
             {
                 return (byte[])obj;
             }
@@ -171,7 +171,7 @@ namespace Storm
             }
 
             MemoryStream memoryStream = new MemoryStream();
-            DefaultSerializer.binaryFormatter.Serialize(memoryStream, obj);
+            GzipSerializer.binaryFormatter.Serialize(memoryStream, obj);
             return memoryStream.ToArray();
         }
     }
