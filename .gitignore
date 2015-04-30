@@ -182,3 +182,7 @@ UpgradeLog*.htm
 # Microsoft Fakes
 FakesAssemblies/
 Storm.Net.Adapter.sln.ide/
+*/target/
+*/.settings/
+*/.project
+/.settings
