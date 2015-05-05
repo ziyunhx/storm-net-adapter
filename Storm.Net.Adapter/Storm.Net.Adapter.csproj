@@ -43,6 +43,7 @@
     <Compile Include="Config.cs" />
     <Compile Include="Context.cs" />
     <Compile Include="Fields.cs" />
+    <Compile Include="IBasicBolt.cs" />
     <Compile Include="IBolt.cs" />
     <Compile Include="IPlugin.cs" />
     <Compile Include="ISpout.cs" />

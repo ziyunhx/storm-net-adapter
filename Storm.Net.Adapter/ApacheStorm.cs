@@ -35,10 +35,16 @@ namespace Storm
                     Context.pluginType = PluginType.BOLT;
                     break;
                 }
+                else if (eachType == typeof(IBasicBolt))
+                {
+                    Context.pluginType = PluginType.BASICBOLT;
+                    break;
+                }
             }
             
             InitComponent(ref config, ref context);
             Context.Config = config;
+            Context.TopologyContext = context;
 
 			PluginType pluginType = Context.pluginType;
 			Context.Logger.Info("LaunchPlugin, pluginType: {0}", new object[]
@@ -60,6 +66,12 @@ namespace Storm
                     bolt.Launch();
 					return;
 				}
+                case PluginType.BASICBOLT:
+                {
+                    BasicBolt basicBolt = new BasicBolt(createDelegate);
+                    basicBolt.Launch();
+                    return;
+                }
 				default:
 				{
 					Context.Logger.Error("unexpected pluginType: {0}!", new object[]
@@ -461,7 +473,6 @@ namespace Storm
                     try
                     {
                         this._bolt.Execute(tuple);
-                        ApacheStorm.ctx.Ack(tuple);
                     }
                     catch (Exception ex)
                     {
@@ -472,5 +483,49 @@ namespace Storm
 				stopwatch.Stop();
 			}
 		}
+    }
+
+    public class BasicBolt
+    {
+        private newPlugin _createDelegate;
+        private IBasicBolt _bolt;
+
+        public BasicBolt(newPlugin createDelegate)
+        {
+            this._createDelegate = createDelegate;
+        }
+        public void Launch()
+        {
+            Context.Logger.Info("[BasicBolt] Launch ...");
+            ApacheStorm.ctx = new BoltContext();
+            IPlugin iPlugin = this._createDelegate(ApacheStorm.ctx);
+            if (!(iPlugin is IBolt))
+            {
+                Context.Logger.Error("[BasicBolt] newPlugin must return IBasicBolt!");
+            }
+            this._bolt = (IBasicBolt)iPlugin;
+            Stopwatch stopwatch = new Stopwatch();
+            while (true)
+            {
+                stopwatch.Start();
+                StormTuple tuple = ApacheStorm.ReadTuple();
+                if (tuple.IsHeartBeatTuple())
+                    ApacheStorm.Sync();
+                else
+                {
+                    try
+                    {
+                        this._bolt.Execute(tuple);
+                        ApacheStorm.ctx.Ack(tuple);
+                    }
+                    catch (Exception ex)
+                    {
+                        ApacheStorm.ctx.Fail(tuple);
+                        Context.Logger.Error(ex.ToString());
+                    }
+                }
+                stopwatch.Stop();
+            }
+        }
     }
 }

@@ -7,7 +7,7 @@ namespace StormSample1
     /// <summary>
     /// The bolt "counter" uses a dictionary to record the occurrence number of each word.
     /// </summary>
-    public class Counter : IBolt
+    public class Counter : IBasicBolt
     {
         private Context ctx;
 

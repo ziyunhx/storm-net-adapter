@@ -10,6 +10,12 @@ namespace Storm
         internal ComponentStreamSchema _schemaByCSharp;
         public static Logger Logger = new Logger();
 
+        public static TopologyContext TopologyContext
+        {
+            set;
+            get;
+        }
+
         public static Config Config
         {
             get;

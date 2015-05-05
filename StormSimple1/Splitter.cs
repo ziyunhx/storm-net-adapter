@@ -7,7 +7,7 @@ namespace StormSample1
     /// <summary>
     /// The bolt "splitter" will split the sentences to words and emit these words to "counter" bolt. 
     /// </summary>
-    public class Splitter : IBolt
+    public class Splitter : IBasicBolt
     {
         private Context ctx;
         private int msgTimeoutSecs;

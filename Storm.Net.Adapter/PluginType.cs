@@ -4,6 +4,7 @@ namespace Storm
     {
         SPOUT,
         BOLT,
+        BASICBOLT,
         UNKNOW
     }
 }
