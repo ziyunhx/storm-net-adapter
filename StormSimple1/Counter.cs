@@ -57,5 +57,10 @@ namespace StormSample1
         {
             return new Counter(ctx);
         }
+
+        public void Prepare(Config stormConf, TopologyContext context)
+        {
+            return;
+        }
     }
 }

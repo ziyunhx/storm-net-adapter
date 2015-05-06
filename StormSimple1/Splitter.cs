@@ -63,5 +63,10 @@ namespace StormSample1
         {
             return new Splitter(ctx);
         }
+
+        public void Prepare(Config stormConf, TopologyContext context)
+        {
+            return;
+        }
     }
 }

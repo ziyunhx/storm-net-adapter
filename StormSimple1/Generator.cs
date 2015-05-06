@@ -112,5 +112,16 @@ namespace StormSample1
         {
             return new Generator(ctx);
         }
+
+        /// <summary>
+        /// Called when a task for this component is initialized within a worker on the cluster.
+        /// It provides the spout with the environment in which the spout executes.
+        /// </summary>
+        /// <param name="config">The Storm configuration for this spout. This is the configuration provided to the topology merged in with cluster configuration on this machine.</param>
+        /// <param name="topologyContext">This object can be used to get information about this task's place within the topology, including the task id and component id of this task, input and output information, etc.</param>
+        public void Open(Config config, TopologyContext topologyContext)
+        {
+            return;
+        }
     }
 }

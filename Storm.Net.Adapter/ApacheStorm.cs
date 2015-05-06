@@ -406,6 +406,9 @@ namespace Storm
 				Context.Logger.Error("[Spout] newPlugin must return ISpout!");
 			}
 			this._spout = (ISpout)iPlugin;
+            //call Open method.
+            this._spout.Open(Context.Config, Context.TopologyContext);
+
 			Stopwatch stopwatch = new Stopwatch();
 			while (true)
 			{
@@ -461,6 +464,10 @@ namespace Storm
 				Context.Logger.Error("[Bolt] newPlugin must return IBolt!");
 			}
 			this._bolt = (IBolt)iPlugin;
+
+            //call Prepare method.
+            this._bolt.Prepare(Context.Config, Context.TopologyContext);
+
 			Stopwatch stopwatch = new Stopwatch();
 			while (true)
 			{
@@ -504,6 +511,10 @@ namespace Storm
                 Context.Logger.Error("[BasicBolt] newPlugin must return IBasicBolt!");
             }
             this._bolt = (IBasicBolt)iPlugin;
+
+            //call Prepare method.
+            this._bolt.Prepare(Context.Config, Context.TopologyContext);
+
             Stopwatch stopwatch = new Stopwatch();
             while (true)
             {
