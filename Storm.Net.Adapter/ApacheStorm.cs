@@ -506,7 +506,7 @@ namespace Storm
             Context.Logger.Info("[BasicBolt] Launch ...");
             ApacheStorm.ctx = new BoltContext();
             IPlugin iPlugin = this._createDelegate(ApacheStorm.ctx);
-            if (!(iPlugin is IBolt))
+            if (!(iPlugin is IBasicBolt))
             {
                 Context.Logger.Error("[BasicBolt] newPlugin must return IBasicBolt!");
             }
