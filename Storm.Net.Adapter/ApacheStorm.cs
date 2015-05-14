@@ -465,30 +465,26 @@ namespace Storm
 			}
 			this._bolt = (IBolt)iPlugin;
 
-            //call Prepare method.
-            this._bolt.Prepare(Context.Config, Context.TopologyContext);
+            try
+            {
+                //call Prepare method.
+                this._bolt.Prepare(Context.Config, Context.TopologyContext);
 
-			Stopwatch stopwatch = new Stopwatch();
-			while (true)
-			{
-				stopwatch.Start();
-                StormTuple tuple = ApacheStorm.ReadTuple();
-                if (tuple.IsHeartBeatTuple())
-                    ApacheStorm.Sync();
-                else
-                {                    
-                    try
+                while (true)
+                {
+                    StormTuple tuple = ApacheStorm.ReadTuple();
+                    if (tuple.IsHeartBeatTuple())
+                        ApacheStorm.Sync();
+                    else
                     {
                         this._bolt.Execute(tuple);
                     }
-                    catch (Exception ex)
-                    {
-                        ApacheStorm.ctx.Fail(tuple);
-                        Context.Logger.Error(ex.ToString());
-                    }
                 }
-				stopwatch.Stop();
-			}
+            }
+            catch (Exception ex)
+            {
+                Context.Logger.Error(ex.ToString());
+            }
 		}
     }
 
@@ -515,10 +511,8 @@ namespace Storm
             //call Prepare method.
             this._bolt.Prepare(Context.Config, Context.TopologyContext);
 
-            Stopwatch stopwatch = new Stopwatch();
             while (true)
             {
-                stopwatch.Start();
                 StormTuple tuple = ApacheStorm.ReadTuple();
                 if (tuple.IsHeartBeatTuple())
                     ApacheStorm.Sync();
@@ -531,11 +525,10 @@ namespace Storm
                     }
                     catch (Exception ex)
                     {
-                        ApacheStorm.ctx.Fail(tuple);
                         Context.Logger.Error(ex.ToString());
+                        ApacheStorm.ctx.Fail(tuple);
                     }
                 }
-                stopwatch.Stop();
             }
         }
     }
