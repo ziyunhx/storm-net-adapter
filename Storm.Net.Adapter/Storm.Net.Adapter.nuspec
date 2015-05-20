@@ -1,15 +1,19 @@
 <?xml version="1.0"?>
-<package >
+<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
   <metadata>
-    <id>$id$</id>
-    <version>$version$</version>
-    <title>$title$</title>
+    <id>Storm.Net.Adapter</id>
+    <version>1.1.0.0</version>
+    <title>Storm.Net.Adapter</title>
     <authors>Carey Tzou</authors>
     <owners>Taikor</owners>
     <licenseUrl>http://www.apache.org/licenses/LICENSE-2.0.html</licenseUrl>
     <projectUrl>https://github.com/ziyunhx/storm-net-adapter</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
-    <description>$description$</description>
-    <copyright>Copyright 2015</copyright>
+    <description>A csharp adapter for apache storm.</description>
+    <copyright>Copyright © Taikor 2015</copyright>
+    <tags>storm</tags>
+    <dependencies>
+      <dependency id="Newtonsoft.Json" version="1.0" />
+    </dependencies>
   </metadata>
 </package>

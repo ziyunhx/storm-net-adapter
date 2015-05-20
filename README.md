@@ -27,11 +27,13 @@ You can download the latest stable and development releases from: [releases](htt
 Getting started
 =======
 
-- Download the latest stable and add reference to your project.
+- Download the latest stable and add reference to your project or using Nuget:
 
-- Add spout and bolt classes and using Storm. For more information check the StormSimple1 project.
+		PM> Install-Package Storm.Net.Adapter
 
-- Build your project and copy the resources to storm topology project. Create a java topology class.
+- Add spout classes based on ISpout and add bolt classes based on IBolt or IBasicBolt, Both of those need using Storm. For more information check the [StormSimple1 project](https://github.com/ziyunhx/storm-net-adapter/tree/master/StormSimple1 "StormSimple1 Project").
+
+- Build your project and copy the resources to storm topology project. Create a java topology class. For more information check the [storm-starter](https://github.com/ziyunhx/storm-net-adapter/tree/master/storm-starter "storm-starter").
 
 - Under Windows(.Net Framework) call your spout or bolt as follows:
 
@@ -53,4 +55,4 @@ Getting started
 Licensing
 =============
 
-Storm.Net.Adapter is licensed under the Apache License, Version 2.0. See [LICENSE](https://github.com/ziyunhx/storm-net-adapter/blob/master/LICENSE "LICENSE") for the full license text.
+Storm.Net.Adapter is licensed under the Apache License, Version 2.0. See [LICENSE](http://www.apache.org/licenses/LICENSE-2.0.html "LICENSE") for the full license text.
