@@ -7,29 +7,44 @@ Overview
 ========
 
 Storm.Net.Adapter is a csharp adapter for apache storm. Storm is a distributed realtime computation system.
-For more information, please check the storm homepage and my personal bolg at: [storm](http://storm.apache.org/ "storm"), [The NewIdea](http://blog.tnidea.com/ "The NewIdea").
+For more information, please check the storm homepage and my personal bolg at: [storm](http://storm.apache.org/ "storm"), [The NewIdea (zh-CN)](http://blog.tnidea.com/ "The NewIdea").
 
 Requirements
 ============
 
 * .Net Framework / Mono
 * Newtonsoft.Json 6.x
-* Python 2.x, JDK 1.6+
+* Python 2.x, JDK 1.6+, Maven 3.x
 * Storm 0.7.1+, Zookeeper
 * Works on Windows, Linux, Mac OSX
 
 Releases
 ========
 
-You can download the latest stable and development releases from: [releases](https://github.com/ziyunhx/storm-net-adapter/releases "releases").
+- You can download the latest stable and development releases from: [releases](https://github.com/ziyunhx/storm-net-adapter/releases "releases").
+
+- Or using Nuget:
+
+		PM> Install-Package Storm.Net.Adapter
+
+- Or clone and build it by yourself.
+
+
+Build and install Storm jars locally
+========
+
+If you are using the latest development version of Storm, e.g. by having cloned the Storm git repository, then you must first perform a local build of Storm itself. Otherwise you will run into Maven errors such as "Could not resolve dependencies for project `org.apache.storm:storm-starter:<storm-version>-SNAPSHOT"`.
+
+    # Must be run from the top-level directory of the Storm code repository
+    $ mvn clean install -DskipTests=true
+
+This command will build Storm locally and install its jar files to your user's `$HOME/.m2/repository/`. When you run the Maven command to build and run storm-starter (see below), Maven will then be able to find the corresponding version of Storm in this local Maven repository at `$HOME/.m2/repository`.
 
 
 Getting started
 =======
 
-- Download the latest stable and add reference to your project or using Nuget:
 
-		PM> Install-Package Storm.Net.Adapter
 
 - Add spout classes based on ISpout and add bolt classes based on IBolt or IBasicBolt, Both of those need using Storm. For more information check the [StormSimple1 project](https://github.com/ziyunhx/storm-net-adapter/tree/master/StormSimple1 "StormSimple1 Project").
 
