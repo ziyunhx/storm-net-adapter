@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 
-namespace StormSample1
+namespace StormSample
 {
     /// <summary>
     /// The spout "generator" will randomly generate some sentences, and emit these sentences to "splitter". 
@@ -41,7 +41,6 @@ namespace StormSample1
         /// It should be noted that NextTuple(), Ack(), and Fail() are all called in a tight loop in a single thread in C# process. 
         /// When there are no tuples to emit, it is courteous to have NextTuple sleep for a short amount of time (such as 10 milliseconds), so as not to waste too much CPU.
         /// </summary>
-        /// <param name="parms"></param>
         public void NextTuple()
         {
             Context.Logger.Info("NextTuple enter");
@@ -70,7 +69,6 @@ namespace StormSample1
         /// If ack is not supported in non-transactional topology, the Ack() can be left as empty function. 
         /// </summary>
         /// <param name="seqId">Sequence Id of the tuple which is acked.</param>
-        /// <param name="parms"></param>
         public void Ack(long seqId)
         {
             Context.Logger.Info("Ack, seqId: {0}", seqId);
@@ -86,7 +84,6 @@ namespace StormSample1
         /// If ack is not supported in non-transactional topology, the Fail() can be left as empty function.
         /// </summary>
         /// <param name="seqId">Sequence Id of the tuple which is failed.</param>
-        /// <param name="parms"></param>
         public void Fail(long seqId)
         {
             Context.Logger.Info("Fail, seqId: {0}", seqId);
@@ -106,7 +103,6 @@ namespace StormSample1
         ///  Implements of delegate "newPlugin", which is used to create a instance of this spout/bolt
         /// </summary>
         /// <param name="ctx">Context instance</param>
-        /// <param name="parms">Parameters to initialize this spout/bolt</param>
         /// <returns></returns>
         public static Generator Get(Context ctx)
         {

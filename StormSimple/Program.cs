@@ -2,9 +2,9 @@
 using System;
 using System.Linq;
 
-namespace StormSample1
+namespace StormSample
 {
-    class HelloWorld
+    class Program
     {
         static void Main(string[] args)
         {

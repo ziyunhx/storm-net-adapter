@@ -2,7 +2,7 @@ using Storm;
 using System;
 using System.Collections.Generic;
 
-namespace StormSample1
+namespace StormSample
 {
     /// <summary>
     /// The bolt "splitter" will split the sentences to words and emit these words to "counter" bolt. 
@@ -11,8 +11,6 @@ namespace StormSample1
     {
         private Context ctx;
         private int msgTimeoutSecs;
-
-        private Random rnd = new Random();
 
         public Splitter(Context ctx)
         {
@@ -57,7 +55,6 @@ namespace StormSample1
         ///  Implements of delegate "newPlugin", which is used to create a instance of this spout/bolt
         /// </summary>
         /// <param name="ctx">Context instance</param>
-        /// <param name="parms">Parameters to initialize this spout/bolt</param>
         /// <returns></returns>
         public static Splitter Get(Context ctx)
         {

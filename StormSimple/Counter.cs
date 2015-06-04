@@ -2,7 +2,7 @@ using Storm;
 using System;
 using System.Collections.Generic;
 
-namespace StormSample1
+namespace StormSample
 {
     /// <summary>
     /// The bolt "counter" uses a dictionary to record the occurrence number of each word.
@@ -51,7 +51,6 @@ namespace StormSample1
         ///  Implements of delegate "newPlugin", which is used to create a instance of this spout/bolt
         /// </summary>
         /// <param name="ctx">Context instance</param>
-        /// <param name="parms">Parameters to initialize this spout/bolt</param>
         /// <returns></returns>
         public static Counter Get(Context ctx)
         {

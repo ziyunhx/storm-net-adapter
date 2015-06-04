@@ -1,11 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
-VisualStudioVersion = 12.0.31101.0
+VisualStudioVersion = 12.0.21005.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Storm.Net.Adapter", "Storm.Net.Adapter\Storm.Net.Adapter.csproj", "{11243FBD-674F-4B0A-8119-95A5C8708323}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StormSimple1", "StormSimple1\StormSimple1.csproj", "{EF7B32F5-43AA-499A-A9C5-754974668451}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StormSimple", "StormSimple\StormSimple.csproj", "{EF7B32F5-43AA-499A-A9C5-754974668451}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{6C5FCB3F-C73C-4FE0-8417-DE74837F4A47}"
 	ProjectSection(SolutionItems) = preProject
