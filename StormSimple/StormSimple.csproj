@@ -32,6 +32,10 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Storm.Net.Adapter, Version=1.1.0.26456, Culture=neutral, PublicKeyToken=7cac8f0183e98465, processorArchitecture=MSIL">
+      <HintPath>..\packages\Storm.Net.Adapter.1.1.0.1\lib\net45\Storm.Net.Adapter.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -49,12 +53,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Storm.Net.Adapter\Storm.Net.Adapter.csproj">
-      <Project>{11243fbd-674f-4b0a-8119-95a5c8708323}</Project>
-      <Name>Storm.Net.Adapter</Name>
-    </ProjectReference>
+    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
