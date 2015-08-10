@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Text;
+using System.Threading;
 
 namespace Storm
 {
@@ -470,6 +471,11 @@ namespace Storm
                 //call Prepare method.
                 this._bolt.Prepare(Context.Config, Context.TopologyContext);
 
+                //get the value of SUPERVISOR_WORKER_TIMEOUT_SECS
+                //int SUPERVISOR_WORKER_TIMEOUT_SECS = 30;
+                //if (Context.Config.StormConf.ContainsKey("SUPERVISOR_WORKER_TIMEOUT_SECS"))
+                //    int.TryParse(Context.Config.StormConf["SUPERVISOR_WORKER_TIMEOUT_SECS"].ToString(), out SUPERVISOR_WORKER_TIMEOUT_SECS);
+
                 while (true)
                 {
                     StormTuple tuple = ApacheStorm.ReadTuple();
@@ -477,6 +483,22 @@ namespace Storm
                         ApacheStorm.Sync();
                     else
                     {
+                        //Thread thread = new Thread(() =>
+                        //{
+                        //    this._bolt.Execute(tuple);
+                        //});
+
+                        //thread.Name = Thread.CurrentThread.Name + " Execute";
+                        //thread.Start();
+
+                        //bool timeout = !thread.Join(new TimeSpan(0, 0, SUPERVISOR_WORKER_TIMEOUT_SECS));
+
+                        //if (timeout)
+                        //{
+                        //    thread.Abort();
+                        //    ApacheStorm.ctx.Fail(tuple); //need do it?
+                        //}
+
                         this._bolt.Execute(tuple);
                     }
                 }
@@ -511,6 +533,11 @@ namespace Storm
             //call Prepare method.
             this._bolt.Prepare(Context.Config, Context.TopologyContext);
 
+            //get the value of SUPERVISOR_WORKER_TIMEOUT_SECS
+            //int SUPERVISOR_WORKER_TIMEOUT_SECS = 30;
+            //if (Context.Config.StormConf.ContainsKey("SUPERVISOR_WORKER_TIMEOUT_SECS"))
+            //    int.TryParse(Context.Config.StormConf["SUPERVISOR_WORKER_TIMEOUT_SECS"].ToString(), out SUPERVISOR_WORKER_TIMEOUT_SECS);
+
             while (true)
             {
                 StormTuple tuple = ApacheStorm.ReadTuple();
@@ -520,6 +547,24 @@ namespace Storm
                 {
                     try
                     {
+                        //Thread thread = new Thread(() =>
+                        //{
+                        //    this._bolt.Execute(tuple);
+                        //});
+
+                        //thread.Name = Thread.CurrentThread.Name + " Execute";
+                        //thread.Start();
+
+                        //bool timeout = !thread.Join(new TimeSpan(0, 0, SUPERVISOR_WORKER_TIMEOUT_SECS));
+
+                        //if (timeout)
+                        //{
+                        //    thread.Abort();
+                        //    ApacheStorm.ctx.Fail(tuple); //need do it?
+                        //}
+                        //else
+                        //    ApacheStorm.ctx.Ack(tuple);
+
                         this._bolt.Execute(tuple);
                         ApacheStorm.ctx.Ack(tuple);
                     }
