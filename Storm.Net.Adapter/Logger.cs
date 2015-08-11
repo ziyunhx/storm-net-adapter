@@ -2,6 +2,14 @@
 {
     public class Logger
     {
+        private string classMsg = "";
+
+        public Logger(string className = "")
+        {
+            if (!string.IsNullOrEmpty(className))
+                classMsg = className + ": ";
+        }
+
         public void Trace(string Message, params object[] args)
         {
             SendLog(FromatMessage(Message, args), 0);
@@ -24,7 +32,7 @@
         }
         private void SendLog(string Message, int level = 2)
         {
-            ApacheStorm.SendMsgToParent("{\"command\": \"log\", \"msg\": \"" + Message + "\", \"level\":" + level + "}");
+            ApacheStorm.SendMsgToParent("{\"command\": \"log\", \"msg\": \"" + classMsg + Message + "\", \"level\":" + level + "}");
         }
 
         private string FromatMessage(string Message, params object[] args)
