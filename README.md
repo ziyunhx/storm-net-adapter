@@ -46,7 +46,7 @@ Getting started
 
 
 
-- Add spout classes based on ISpout and add bolt classes based on IBolt or IBasicBolt, Both of those need using Storm. For more information check the [StormSimple project](https://github.com/ziyunhx/storm-net-adapter/tree/master/StormSimple "StormSimple Project").
+- Add spout classes based on ISpout and add bolt classes based on IBolt or IBasicBolt, Both of those need using Storm. For more information check the [StormSimple project](https://github.com/ziyunhx/storm-net-adapter/tree/master/samples/StormSimple "StormSimple Project").
 
 - Build your project and copy the resources to storm topology project. Create a java topology class. For more information check the [storm-starter](https://github.com/ziyunhx/storm-net-adapter/tree/master/storm-starter "storm-starter").
 
@@ -66,6 +66,13 @@ Getting started
 
 		$ storm jar storm-starter-*-jar-with-dependencies.jar storm.starter.WordCountTopologyCsharp wordcount
 
+Remote DRPC
+=============
+
+ Storm.Net.Adapter is also support DRPC now. You can call the remote DRPC like this:
+
+	DRPCClient client = new DRPCClient("drpc-host", 3772);
+	string result = client.execute("exclamation", "hello word");
 
 Licensing
 =============
