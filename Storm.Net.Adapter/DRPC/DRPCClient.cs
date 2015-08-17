@@ -52,8 +52,6 @@ namespace Storm.DRPC
 
             TProtocol protocol = new TBinaryProtocol(transport);
             client = new DistributedRPC.Client(protocol);
-
-            
         }
 
         /// <summary>

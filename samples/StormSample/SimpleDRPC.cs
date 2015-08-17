@@ -36,9 +36,11 @@ namespace StormSample
 
         public void Execute(StormTuple tuple)
         {
+            Context.Logger.Info("SimpleDRPC Execute enter");
             string sentence = tuple.GetString(1) + "!";
-
+            Context.Logger.Warn(tuple.GetString(0) + ";" + tuple.GetString(1));
             this.ctx.Emit("default", new List<StormTuple> { tuple }, new List<object> { tuple.GetString(0), sentence });
+            Context.Logger.Info("SimpleDRPC Execute exit");
         }
 
         public void Prepare(Config stormConf, TopologyContext context)
