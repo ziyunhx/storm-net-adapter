@@ -26,6 +26,10 @@ namespace StormSample
                     {
                         ApacheStorm.LaunchPlugin(new newPlugin(Counter.Get));
                     }
+                    else if ("SimpleDRPC".Equals(compName))
+                    {
+                        ApacheStorm.LaunchPlugin(new newPlugin(SimpleDRPC.Get));
+                    }
                     else
                     {
                         throw new Exception(string.Format("unexpected compName: {0}", compName));

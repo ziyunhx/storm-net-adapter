@@ -14,7 +14,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{6C5FCB
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "samples", "samples", "{350B2F76-E6FD-46AF-87B7-3A427A373C14}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StormSimple", "samples\StormSimple\StormSimple.csproj", "{EF7B32F5-43AA-499A-A9C5-754974668451}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StormSimple", "samples\StormSample\StormSample.csproj", "{EF7B32F5-43AA-499A-A9C5-754974668451}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Storm.DRPC.Demo", "samples\Storm.DRPC.Demo\Storm.DRPC.Demo.csproj", "{FF461395-14DA-4DD1-9AFA-576CDCC4FE65}"
 EndProject
