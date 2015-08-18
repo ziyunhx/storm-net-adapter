@@ -42,7 +42,7 @@ namespace Storm
         }
         public string GetString(int i)
         {
-            return (string)this.values[i];
+            return this.values[i] as string;
         }
         public int GetInteger(int i)
         {

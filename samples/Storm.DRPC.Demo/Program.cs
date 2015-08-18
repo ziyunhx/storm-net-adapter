@@ -16,7 +16,7 @@ namespace Storm.DRPC.Demo
                 if (string.IsNullOrEmpty(input))
                     break;
 
-                Console.WriteLine(client.execute("exclamation", input));
+                Console.WriteLine(client.execute("simpledrpc", input));
             }
             while (true);
         }

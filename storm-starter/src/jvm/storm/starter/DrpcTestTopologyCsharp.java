@@ -21,7 +21,9 @@ import backtype.storm.Config;
 import backtype.storm.LocalCluster;
 import backtype.storm.LocalDRPC;
 import backtype.storm.StormSubmitter;
+import backtype.storm.drpc.DRPCSpout;
 import backtype.storm.drpc.LinearDRPCTopologyBuilder;
+import backtype.storm.drpc.ReturnResults;
 import backtype.storm.spout.ShellSpout;
 import backtype.storm.task.ShellBolt;
 import backtype.storm.topology.IRichBolt;
@@ -39,13 +41,13 @@ public class DrpcTestTopologyCsharp {
 	public static class SimpleDRPC extends ShellBolt implements IRichBolt {
 
 		public SimpleDRPC() {
-			super("cmd", "/k", "CALL", "StormSimple.exe", "SimpleDRPC");
+			super("cmd", "/k", "CALL", "StormSample.exe", "SimpleDRPC");
 			
 		}
 
 		@Override
 		public void declareOutputFields(OutputFieldsDeclarer declarer) {
-			declarer.declare(new Fields("id", "word"));
+			declarer.declare(new Fields("id", "result"));
 		}
 
 		@Override
@@ -55,28 +57,28 @@ public class DrpcTestTopologyCsharp {
 	}	
 	
 	public static void main(String[] args) throws Exception {
-		LinearDRPCTopologyBuilder builder = new LinearDRPCTopologyBuilder("simpledrpc");
-	    builder.addBolt(new SimpleDRPC(), 3);
+	  	TopologyBuilder builder = new TopologyBuilder();
+		  
+	  	DRPCSpout drpcSpout = new DRPCSpout("simpledrpc");
+	    builder.setSpout("drpc-input", drpcSpout,1);
 
-		Config conf = new Config();
-		conf.setDebug(true);
+	    builder.setBolt("simple", new SimpleDRPC(), 2)
+	    		.noneGrouping("drpc-input");
+	    
+	    builder.setBolt("return", new ReturnResults(),1)
+		.noneGrouping("simple");
 
-		if (args == null || args.length == 0) {
-		      LocalDRPC drpc = new LocalDRPC();
-		      LocalCluster cluster = new LocalCluster();
-
-		      cluster.submitTopology("drpc-demo", conf, builder.createLocalTopology(drpc));
-
-		      for (String word : new String[]{ "hello", "goodbye" }) {
-		        System.out.println("Result for \"" + word + "\": " + drpc.execute("exclamation", word));
-		      }
-
-		      cluster.shutdown();
-		      drpc.shutdown();
-		    }
-		    else {
-		      conf.setNumWorkers(1);
-		      StormSubmitter.submitTopologyWithProgressBar(args[0], conf, builder.createRemoteTopology());
-		    }
+	    Config conf = new Config();
+	    conf.setDebug(true);
+	    conf.setMaxTaskParallelism(1);
+	    
+	    try
+	    {
+	    	StormSubmitter.submitTopology("drpc-q", conf,builder.createTopology());
+	    }
+	    catch (Exception e)
+	    {
+	    	e.printStackTrace();
+	    }
 	}
 }
