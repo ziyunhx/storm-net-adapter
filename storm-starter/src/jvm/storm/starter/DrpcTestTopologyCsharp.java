@@ -41,7 +41,7 @@ public class DrpcTestTopologyCsharp {
 	public static class SimpleDRPC extends ShellBolt implements IRichBolt {
 
 		public SimpleDRPC() {
-			super("cmd", "/k", "CALL", "StormSample.exe", "SimpleDRPC");
+			super("mono", "StormSample.exe", "SimpleDRPC");
 			
 		}
 

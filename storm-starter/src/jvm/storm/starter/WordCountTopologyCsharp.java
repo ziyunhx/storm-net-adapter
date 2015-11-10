@@ -37,7 +37,7 @@ public class WordCountTopologyCsharp {
 	public static class Generator extends ShellSpout implements IRichSpout {
 
 		public Generator() {
-			super("cmd", "/k", "CALL", "StormSimple.exe", "generator");
+			super("mono", "StormSample.exe", "generator");
 			
 		}
 
@@ -55,7 +55,7 @@ public class WordCountTopologyCsharp {
 	public static class Splitter extends ShellBolt implements IRichBolt {
 
 		public Splitter() {
-			super("cmd", "/k", "CALL", "StormSimple.exe", "splitter");
+			super("mono", "StormSample.exe", "splitter");
 		}
 
 		@Override
@@ -72,7 +72,7 @@ public class WordCountTopologyCsharp {
 	public static class Counter extends ShellBolt implements IRichBolt {
 		
 		public Counter(){
-			super("cmd", "/k", "CALL", "StormSimple.exe", "counter");
+			super("mono", "StormSample.exe", "counter");
 		}
 		
 		@Override
