@@ -95,7 +95,8 @@ namespace Storm
                 return;
 
             //fix output bug on mono.
-            //Console.OutputEncoding = Encoding.UTF8;
+            var encoding = new UTF8Encoding(false);
+            Console.OutputEncoding = encoding;
             Console.WriteLine(message);
             Console.WriteLine("end");
         }
