@@ -1,11 +1,9 @@
-﻿using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
+﻿using Storm.Reflection;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Text;
-using System.Threading;
 
 namespace Storm
 {
@@ -108,26 +106,19 @@ namespace Storm
         {
             string message = ReadMsg();
 
-            JContainer container = JsonConvert.DeserializeObject(message) as JContainer;
+            StormConfigure configure = SimpleJson.DeserializeObject<StormConfigure>(message);
 
-            var _pidDir = container["pidDir"];
-            if (_pidDir != null && _pidDir.GetType() == typeof(JValue))
-            {
-                string pidDir = (_pidDir as JValue).Value.ToString();
-                SendPid(pidDir);
-            }
+            if(!string.IsNullOrEmpty(configure.pidDir))
+                SendPid(configure.pidDir);
 
-            var _conf = container["conf"];
-            if (_conf != null && _conf.GetType().BaseType == typeof(JContainer))
-            {
-                config = GetConfig(_conf as JContainer);
-            }
+            config.StormConf = configure.conf;
 
-            var _context = container["context"];
-            if (_context != null && _context.GetType().BaseType == typeof(JContainer))
-            {
-                context = GetContext(_context as JContainer);
-            }
+            //Todo: ignore the context?
+            //string topologyId = "";
+            //if (configure.context.ContainsKey("componentid"))
+            //    topologyId = configure.context["componentid"].ToString();
+
+            //context = new TopologyContext(Convert.ToInt32(configure.context["taskid"]), topologyId, null);
         }
 
         public static Command ReadCommand()
@@ -140,90 +131,31 @@ namespace Storm
                 {
                     string msg = ReadMsg();
 
-                    bool isTaskId = JsonConvert.DeserializeObject(msg).GetType() == typeof(JArray);
-                    if (isTaskId)
+                    //deserialize and verify the type.
+                    object jsonObject = SimpleJson.DeserializeObject(msg);
+                    if (!ReflectionUtils.IsAssignableFrom(jsonObject.GetType(), typeof(JsonArray)))
                     {
-                        JArray container = JsonConvert.DeserializeObject(msg) as JArray;
+                        Command stormCommand = SimpleJson.DeserializeObject<Command>(msg);
 
-                        if (container == null || container.Count == 0)
-                            pendingTaskIds.Enqueue(" ");
-                        else
-                        {
-                            pendingTaskIds.Enqueue((container[0] as JValue).Value.ToString());
-                        }
+                        //verify the tuple.
+                        if (stormCommand.tuple != null && stormCommand.tuple.Length > 0)
+                            ApacheStorm.ctx.CheckInputSchema(stormCommand.stream, stormCommand.tuple.Length);
+
+                        return stormCommand;
                     }
                     else
                     {
-                        return ConvertCommand(msg);
-                    }
-                }
-                while (true);
-            }
-        }
-
-        private static Command ConvertCommand(string msg)
-        {
-            JContainer container = JsonConvert.DeserializeObject(msg) as JContainer;
-            var _command = container["command"];
-            if (_command != null && _command.GetType() == typeof(JValue))
-            {
-                string name = (_command as JValue).Value.ToString();
-                string id = "";
-
-                var _id = container["id"];
-                if (_id != null && _id.GetType() == typeof(JValue))
-                {
-                    id = (_id as JValue).Value.ToString();
-                }
-                return new Command() { Id = id, Name = name };
-            }
-            else
-            {
-                int taskId = -1;
-                string streamId = "", id = "", component = "";
-                List<object> tuple = new List<object>();
-
-                var _tupleId = container["id"];
-                if (_tupleId != null && _tupleId.GetType() == typeof(JValue))
-                {
-                    id = (_tupleId as JValue).Value.ToString();
-                }
-
-                var _component = container["comp"];
-                if (_component != null && _component.GetType() == typeof(JValue))
-                {
-                    if ((_component as JValue).Value != null)
-                        component = (_component as JValue).Value.ToString();
-                }
-
-                var _streamId = container["stream"];
-                if (_streamId != null && _streamId.GetType() == typeof(JValue))
-                {
-                    streamId = (_streamId as JValue).Value.ToString();
-                }
-
-                var _taskId = container["task"];
-                if (_taskId != null && _taskId.GetType() == typeof(JValue))
-                {
-                    Int32.TryParse((_taskId as JValue).Value.ToString(), out taskId);
-                }
-
-                var _values = container["tuple"];
-                if (_values != null && _values.GetType() == typeof(JArray))
-                {
-                    JArray values = _values as JArray;
-                    if (values.Count > 0)
-                    {
-                        ApacheStorm.ctx.CheckInputSchema(streamId, values.Count);
-                        for (int i = 0; i < values.Count; i++)
+                        string[] taskIds = jsonObject as string[];
+                        if (taskIds == null || taskIds.Length == 0)
+                            pendingTaskIds.Enqueue(" ");
+                        else
                         {
-                            Type type = ApacheStorm.ctx._schemaByCSharp.InputStreamSchema[streamId][i];                            
-                            tuple.Add(values[i].ToObject(type));                            
+                            foreach (string taskId in taskIds)
+                                pendingTaskIds.Enqueue(taskId);
                         }
                     }
                 }
-
-                return new Command() { Id = id, Component = component, StreamId = streamId, TaskId = taskId, Tuple = tuple };
+                while (true);
             }
         }
 
@@ -237,19 +169,25 @@ namespace Storm
                 {
                     string msg = ReadMsg();
 
-                    bool isTaskId = JsonConvert.DeserializeObject(msg).GetType() == typeof(JArray);
-                    if (!isTaskId)
+                    //deserialize and verify the type.
+                    object jsonObject = SimpleJson.DeserializeObject(msg);
+                    if (!ReflectionUtils.IsAssignableFrom(jsonObject.GetType(), typeof(JsonArray)))
                     {
-                        pendingCommands.Enqueue(ConvertCommand(msg));
+                        Command stormCommand = SimpleJson.DeserializeObject<Command>(msg);
+
+                        //verify the tuple.
+                        if (stormCommand.tuple != null && stormCommand.tuple.Length > 0)
+                            ApacheStorm.ctx.CheckInputSchema(stormCommand.stream, stormCommand.tuple.Length);
+
+                        pendingCommands.Enqueue(stormCommand);
                     }
                     else
                     {
-                        JArray container = JsonConvert.DeserializeObject(msg) as JArray;
-                        
-                        if (container == null || container.Count == 0) //will be null at the end of bolt.
+                        string[] taskIds = jsonObject as string[];
+                        if (taskIds == null || taskIds.Length == 0)
                             return "";
                         else
-                            return (container[0] as JValue).Value.ToString();
+                            return taskIds[0];
                     }
                 }
                 while (true);
@@ -259,7 +197,7 @@ namespace Storm
         public static StormTuple ReadTuple()
         {
             Command command = ReadCommand();
-            return new StormTuple(command.Tuple, command.TaskId, command.StreamId, command.Id, command.Component);
+            return new StormTuple(command.tuple, command.task, command.stream, command.id, command.comp);
         }
 
         /// <summary>
@@ -336,59 +274,6 @@ namespace Storm
             File.WriteAllText(heartBeatDir + "/" + pid.ToString(), "");
             SendMsgToParent("{\"pid\": " + pid.ToString() + "}");            
         }
-
-        private static Config GetConfig(JContainer configContainer)
-        {
-            Config config = new Config();
-
-            foreach (var item in configContainer)
-            {
-                if (item.GetType() == typeof(JProperty))
-                {
-                    JProperty temp = item as JProperty;
-
-                    if (temp.Value.GetType() == typeof(JValue))
-                        config.StormConf.Add(temp.Name, (temp.Value as JValue).Value);
-                }
-            }
-            return config;
-        }
-
-        private static TopologyContext GetContext(JContainer contextContainer)
-        {
-            try
-            {
-                int taskId = -1;
-                Dictionary<int, string> component = new Dictionary<int, string>();
-
-                var _taskId = contextContainer["taskid"];
-                if (_taskId.GetType() == typeof(JValue))
-                    Int32.TryParse((_taskId as JValue).Value.ToString(), out taskId);
-
-                var _component = contextContainer["task->component"];
-                if (_component != null && _component.GetType().BaseType == typeof(JContainer))
-                {
-                    foreach (var item in _component)
-                    {
-                        if (item.GetType() == typeof(JProperty))
-                        {
-                            JProperty temp = item as JProperty;
-
-                            if (temp.Value.GetType() == typeof(JValue))
-                                component.Add(Convert.ToInt32(temp.Name), (temp.Value as JValue).Value.ToString());
-                        }
-                    }
-                }
-
-                return new TopologyContext(taskId, "", component);
-
-            }
-            catch (Exception ex)
-            {
-                Context.Logger.Error(ex.ToString());
-                return null;
-            }
-        }
     }
 
     public class Spout
@@ -419,18 +304,18 @@ namespace Storm
                 {
                     stopwatch.Start();
                     Command command = ApacheStorm.ReadCommand();
-                    if (command.Name == "next")
+                    if (command.command == "next")
                     {
                         this._spout.NextTuple();
                     }
-                    else if (command.Name == "ack")
+                    else if (command.command == "ack")
                     {
-                        long seqId = long.Parse(command.Id);
+                        long seqId = long.Parse(command.id);
                         this._spout.Ack(seqId);
                     }
-                    else if (command.Name == "fail")
+                    else if (command.command == "fail")
                     {
-                        long seqId = long.Parse(command.Id);
+                        long seqId = long.Parse(command.id);
                         this._spout.Fail(seqId);
                     }
                     else
@@ -472,12 +357,7 @@ namespace Storm
             {
                 //call Prepare method.
                 this._bolt.Prepare(Context.Config, Context.TopologyContext);
-
-                //get the value of SUPERVISOR_WORKER_TIMEOUT_SECS
-                //int SUPERVISOR_WORKER_TIMEOUT_SECS = 30;
-                //if (Context.Config.StormConf.ContainsKey("SUPERVISOR_WORKER_TIMEOUT_SECS"))
-                //    int.TryParse(Context.Config.StormConf["SUPERVISOR_WORKER_TIMEOUT_SECS"].ToString(), out SUPERVISOR_WORKER_TIMEOUT_SECS);
-
+ 
                 while (true)
                 {
                     StormTuple tuple = ApacheStorm.ReadTuple();
@@ -485,22 +365,6 @@ namespace Storm
                         ApacheStorm.Sync();
                     else
                     {
-                        //Thread thread = new Thread(() =>
-                        //{
-                        //    this._bolt.Execute(tuple);
-                        //});
-
-                        //thread.Name = Thread.CurrentThread.Name + " Execute";
-                        //thread.Start();
-
-                        //bool timeout = !thread.Join(new TimeSpan(0, 0, SUPERVISOR_WORKER_TIMEOUT_SECS));
-
-                        //if (timeout)
-                        //{
-                        //    thread.Abort();
-                        //    ApacheStorm.ctx.Fail(tuple); //need do it?
-                        //}
-
                         this._bolt.Execute(tuple);
                     }
                 }
@@ -535,11 +399,6 @@ namespace Storm
             //call Prepare method.
             this._bolt.Prepare(Context.Config, Context.TopologyContext);
 
-            //get the value of SUPERVISOR_WORKER_TIMEOUT_SECS
-            //int SUPERVISOR_WORKER_TIMEOUT_SECS = 30;
-            //if (Context.Config.StormConf.ContainsKey("SUPERVISOR_WORKER_TIMEOUT_SECS"))
-            //    int.TryParse(Context.Config.StormConf["SUPERVISOR_WORKER_TIMEOUT_SECS"].ToString(), out SUPERVISOR_WORKER_TIMEOUT_SECS);
-
             while (true)
             {
                 StormTuple tuple = ApacheStorm.ReadTuple();
@@ -549,24 +408,6 @@ namespace Storm
                 {
                     try
                     {
-                        //Thread thread = new Thread(() =>
-                        //{
-                        //    this._bolt.Execute(tuple);
-                        //});
-
-                        //thread.Name = Thread.CurrentThread.Name + " Execute";
-                        //thread.Start();
-
-                        //bool timeout = !thread.Join(new TimeSpan(0, 0, SUPERVISOR_WORKER_TIMEOUT_SECS));
-
-                        //if (timeout)
-                        //{
-                        //    thread.Abort();
-                        //    ApacheStorm.ctx.Fail(tuple); //need do it?
-                        //}
-                        //else
-                        //    ApacheStorm.ctx.Ack(tuple);
-
                         this._bolt.Execute(tuple);
                         ApacheStorm.ctx.Ack(tuple);
                     }

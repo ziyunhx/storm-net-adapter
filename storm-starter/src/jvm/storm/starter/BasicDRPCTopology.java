@@ -71,7 +71,7 @@ public class BasicDRPCTopology {
       drpc.shutdown();
     }
     else {
-      conf.setNumWorkers(1);
+      conf.setNumWorkers(3);
       StormSubmitter.submitTopologyWithProgressBar(args[0], conf, builder.createRemoteTopology());
     }
   }

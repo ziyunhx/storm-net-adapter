@@ -1,4 +1,3 @@
-using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 
@@ -12,9 +11,10 @@ namespace Storm
         private string component;
         private string tupleId;
 
-        public StormTuple(List<object> tuple, int taskId, string streamId, string tupleId, string component)
+        public StormTuple(object[] tuple, int taskId, string streamId, string tupleId, string component)
         {
-            this.values = tuple;
+            if(tuple != null)
+                this.values.AddRange(tuple);
             this.taskId = taskId;
             this.streamId = streamId;
             this.component = component;
@@ -23,7 +23,7 @@ namespace Storm
 
         public Boolean IsHeartBeatTuple()
         {
-            return this.taskId == -1 && this.streamId == "__heartbeat";
+            return this.streamId == "__heartbeat";
         }
 
         public override string ToString()
