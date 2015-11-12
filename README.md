@@ -46,7 +46,7 @@ Getting started
 
 
 
-- Add spout classes based on ISpout and add bolt classes based on IBolt or IBasicBolt, Both of those need using Storm. For more information check the [StormSimple project](https://github.com/ziyunhx/storm-net-adapter/tree/master/samples/StormSimple "StormSimple Project").
+- Add spout classes based on ISpout and add bolt classes based on IBolt or IBasicBolt, Both of those need using Storm. For more information check the [StormSample project](https://github.com/ziyunhx/storm-net-adapter/tree/master/samples/StormSample "StormSample Project").
 
 - Build your project and copy the resources to storm topology project. Create a java topology class. For more information check the [storm-starter](https://github.com/ziyunhx/storm-net-adapter/tree/master/storm-starter "storm-starter").
 
