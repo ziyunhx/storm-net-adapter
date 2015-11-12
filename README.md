@@ -13,7 +13,7 @@ Requirements
 ============
 
 * .Net Framework / Mono
-* Newtonsoft.Json 6.x
+* Thrift 0.9.x
 * Python 2.x, JDK 1.6+, Maven 3.x
 * Storm 0.7.1+, Zookeeper
 * Works on Windows, Linux, Mac OSX
