@@ -100,7 +100,8 @@ public class WordCountTopologyCsharp {
 				new Fields("word", "count"));
 
 		Config conf = new Config();
-		conf.setDebug(true);
+		//conf.setDebug(true);
+		
 
 		if (args != null && args.length > 0) {
 			conf.setNumWorkers(3);

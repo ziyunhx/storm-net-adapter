@@ -7,7 +7,7 @@ namespace Storm.DRPC
     /// <summary>
     /// The DRPC Client
     /// </summary>
-    public class DRPCClient : DistributedRPC.Iface
+    public class DRPCClient : DistributedRPC.Iface, IDisposable
     {
         /// <summary>
         /// excute the method
@@ -17,9 +17,14 @@ namespace Storm.DRPC
         /// <returns></returns>
         public string execute(string functionName, string funcArgs)
         {
-            transport.Open();
+            if (_reconnect)
+                Connect();
+
             string result = client.execute(functionName, funcArgs);
-            transport.Close();
+
+            if (_reconnect)
+                transport.Close();
+
             return result;
         }
 
@@ -28,6 +33,7 @@ namespace Storm.DRPC
         private string _host = "localhost";
         private int _port = 3772;
         private int _timeout = 0;
+        private bool _reconnect = false;
 
         /// <summary>
         /// Init method
@@ -35,22 +41,28 @@ namespace Storm.DRPC
         /// <param name="host">the host</param>
         /// <param name="port">the port</param>
         /// <param name="timeout">timeout of DRPC</param>
-        public DRPCClient(string host, int port, int timeout = 0)
+        public DRPCClient(string host, int port, int timeout = 0, bool reconnect = false)
         {
             this._host = host;
             this._port = port;
             this._timeout = timeout;
+            this._reconnect = reconnect;
 
+            if (!reconnect)
+                Connect();
+        }
 
+        private void Connect()
+        {
             TSocket socket = new TSocket(_host, _port);
             if (_timeout > 0)
-            {
                 socket.Timeout = _timeout;
-            }
 
             transport = new TFramedTransport(socket);
 
             TProtocol protocol = new TBinaryProtocol(transport);
+            transport.Open();
+
             client = new DistributedRPC.Client(protocol);
         }
 
@@ -79,6 +91,13 @@ namespace Storm.DRPC
         public DistributedRPC.Client GetClient()
         {
             return client;
+        }
+
+        public void Dispose()
+        {
+            //disposed the connection            
+            client.Dispose();
+            transport.Dispose();
         }
     }
 }
