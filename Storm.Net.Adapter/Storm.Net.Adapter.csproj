@@ -7,7 +7,7 @@
     <ProjectGuid>{11243FBD-674F-4B0A-8119-95A5C8708323}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Storm.Net.Adapter</RootNamespace>
+    <RootNamespace>Storm</RootNamespace>
     <AssemblyName>Storm.Net.Adapter</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
@@ -52,7 +52,9 @@
     <Compile Include="Config.cs" />
     <Compile Include="Context.cs" />
     <Compile Include="DRPC\DRPCClient.cs" />
+    <Compile Include="DRPC\ThriftConfig.cs" />
     <Compile Include="DRPC\ThriftConnectionType.cs" />
+    <Compile Include="DRPC\ThriftPool.cs" />
     <Compile Include="Fields.cs" />
     <Compile Include="IBasicBolt.cs" />
     <Compile Include="IBolt.cs" />

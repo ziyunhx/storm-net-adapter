@@ -7,8 +7,12 @@ namespace Storm.DRPC
     /// <summary>
     /// The DRPC Client
     /// </summary>
-    public class DRPCClient : DistributedRPC.Iface, IDisposable
+    public class DRPCClient : DistributedRPC.Iface
     {
+        private ThriftConfig thriftConfig = new ThriftConfig();
+        private ThriftPool thriftPool = null;
+        private bool _reconnect = false;
+
         /// <summary>
         /// excute the method
         /// </summary>
@@ -17,23 +21,19 @@ namespace Storm.DRPC
         /// <returns></returns>
         public string execute(string functionName, string funcArgs)
         {
-            if (_reconnect)
-                Connect();
+            TTransport transport = thriftPool.BorrowInstance();
+            TProtocol protocol = new TBinaryProtocol(transport);
+            DistributedRPC.Client client = new DistributedRPC.Client(protocol);
 
             string result = client.execute(functionName, funcArgs);
 
             if (_reconnect)
                 transport.Close();
+            else
+                thriftPool.ReturnInstance(transport);
 
             return result;
         }
-
-        private TTransport transport;
-        private DistributedRPC.Client client;
-        private string _host = "localhost";
-        private int _port = 3772;
-        private int _timeout = 0;
-        private bool _reconnect = false;
 
         /// <summary>
         /// Init method
@@ -41,29 +41,20 @@ namespace Storm.DRPC
         /// <param name="host">the host</param>
         /// <param name="port">the port</param>
         /// <param name="timeout">timeout of DRPC</param>
-        public DRPCClient(string host, int port, int timeout = 0, bool reconnect = false)
-        {
-            this._host = host;
-            this._port = port;
-            this._timeout = timeout;
-            this._reconnect = reconnect;
+        public DRPCClient(string host, int port, int timeout = 0, bool reconnect = false, int maxIdle = 100)
+        {            
+            thriftConfig.Host = host;
+            thriftConfig.Port = port;
+            thriftConfig.Timeout = timeout;
+            thriftConfig.MaxIdle = maxIdle;
+            thriftConfig.ReConnect = reconnect;
+            thriftConfig.MaxActive = maxIdle;
+            thriftConfig.MinIdle = 0;
+            thriftConfig.ValidateOnBorrow = false;
+            thriftConfig.ValidateOnReturn = false;
+            thriftConfig.ValidateWhiledIdle = false;
 
-            if (!reconnect)
-                Connect();
-        }
-
-        private void Connect()
-        {
-            TSocket socket = new TSocket(_host, _port);
-            if (_timeout > 0)
-                socket.Timeout = _timeout;
-
-            transport = new TFramedTransport(socket);
-
-            TProtocol protocol = new TBinaryProtocol(transport);
-            transport.Open();
-
-            client = new DistributedRPC.Client(protocol);
+            thriftPool = new ThriftPool(thriftConfig);
         }
 
         /// <summary>
@@ -72,7 +63,7 @@ namespace Storm.DRPC
         /// <returns></returns>
         public String GetHost()
         {
-            return _host;
+            return thriftConfig.Host;
         }
 
         /// <summary>
@@ -81,7 +72,7 @@ namespace Storm.DRPC
         /// <returns></returns>
         public int GetPort()
         {
-            return _port;
+            return thriftConfig.Port;
         }
 
         /// <summary>
@@ -90,14 +81,9 @@ namespace Storm.DRPC
         /// <returns></returns>
         public DistributedRPC.Client GetClient()
         {
-            return client;
-        }
-
-        public void Dispose()
-        {
-            //disposed the connection            
-            client.Dispose();
-            transport.Dispose();
+            TTransport transport = thriftPool.BorrowInstance();
+            TProtocol protocol = new TBinaryProtocol(transport);
+            return new DistributedRPC.Client(protocol);
         }
     }
 }
