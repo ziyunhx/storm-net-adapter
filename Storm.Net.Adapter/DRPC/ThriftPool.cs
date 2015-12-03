@@ -1,6 +1,5 @@
 ﻿using System;
-using System.Collections.Concurrent;
-using System.Linq;
+using System.Collections.Generic;
 using System.Threading;
 using Thrift.Transport;
 
@@ -15,7 +14,7 @@ namespace Storm.DRPC
         /// <summary>
         /// the thrift connection pool.
         /// </summary>
-        private static ConcurrentStack<TTransport> objectPool { get; set; }
+        private static Stack<TTransport> objectPool { get; set; }
         /// <summary>
         /// auto reset event.
         /// </summary>
@@ -49,19 +48,21 @@ namespace Storm.DRPC
         {
             lock (locker)
             {
-                TTransport transport;
-                if (objectPool.Count() == 0)
+                
+                if (objectPool.Count == 0)
                 {
                     if (activedCount == config.MaxActive)
                         resetEvent.WaitOne();
                     else
                         PushObject(CreateInstance());
                 }
-                if (!objectPool.TryPop(out transport))
+
+                TTransport transport = objectPool.Pop();
+                if (transport == null)
                     throw new Exception("Thrift Pool Error.");
                 activedCount++;
 
-                if (objectPool.Count() < config.MinIdle && activedCount < config.MaxActive)
+                if (objectPool.Count < config.MinIdle && activedCount < config.MaxActive)
                     PushObject(CreateInstance());
                 if (config.ValidateOnBorrow)
                     ValidateOnBorrow(transport);
@@ -75,7 +76,7 @@ namespace Storm.DRPC
         /// <param name="instance"></param>
         public void ReturnInstance(TTransport instance)
         {
-            if (objectPool.Count() >= config.MaxIdle)
+            if (objectPool.Count >= config.MaxIdle)
                 DestoryInstance(instance);
             else
             {
@@ -106,7 +107,7 @@ namespace Storm.DRPC
         {
             if (objectPool == null)
             {
-                objectPool = new ConcurrentStack<TTransport>();
+                objectPool = new Stack<TTransport>();
             }
         }
 
