@@ -18,6 +18,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Storm.DRPC.Demo", "samples\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Storm.Net.Adapter", "Storm.Net.Adapter\Storm.Net.Adapter.csproj", "{11243FBD-674F-4B0A-8119-95A5C8708323}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Storm.Net.Adapter.UnitTest", "Storm.Net.Adapter.UnitTest\Storm.Net.Adapter.UnitTest.csproj", "{55AE82AF-BB1F-4D2B-BE5A-D5CA6D0E8BF5}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -28,6 +30,10 @@ Global
 		Release|ARM = Release|ARM
 		Release|x64 = Release|x64
 		Release|x86 = Release|x86
+		Storm|Any CPU = Storm|Any CPU
+		Storm|ARM = Storm|ARM
+		Storm|x64 = Storm|x64
+		Storm|x86 = Storm|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{EF7B32F5-43AA-499A-A9C5-754974668451}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
@@ -46,6 +52,14 @@ Global
 		{EF7B32F5-43AA-499A-A9C5-754974668451}.Release|x64.Build.0 = Release|Any CPU
 		{EF7B32F5-43AA-499A-A9C5-754974668451}.Release|x86.ActiveCfg = Release|Any CPU
 		{EF7B32F5-43AA-499A-A9C5-754974668451}.Release|x86.Build.0 = Release|Any CPU
+		{EF7B32F5-43AA-499A-A9C5-754974668451}.Storm|Any CPU.ActiveCfg = Release|Any CPU
+		{EF7B32F5-43AA-499A-A9C5-754974668451}.Storm|Any CPU.Build.0 = Release|Any CPU
+		{EF7B32F5-43AA-499A-A9C5-754974668451}.Storm|ARM.ActiveCfg = Release|Any CPU
+		{EF7B32F5-43AA-499A-A9C5-754974668451}.Storm|ARM.Build.0 = Release|Any CPU
+		{EF7B32F5-43AA-499A-A9C5-754974668451}.Storm|x64.ActiveCfg = Release|Any CPU
+		{EF7B32F5-43AA-499A-A9C5-754974668451}.Storm|x64.Build.0 = Release|Any CPU
+		{EF7B32F5-43AA-499A-A9C5-754974668451}.Storm|x86.ActiveCfg = Release|Any CPU
+		{EF7B32F5-43AA-499A-A9C5-754974668451}.Storm|x86.Build.0 = Release|Any CPU
 		{FF461395-14DA-4DD1-9AFA-576CDCC4FE65}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{FF461395-14DA-4DD1-9AFA-576CDCC4FE65}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FF461395-14DA-4DD1-9AFA-576CDCC4FE65}.Debug|ARM.ActiveCfg = Debug|Any CPU
@@ -62,6 +76,14 @@ Global
 		{FF461395-14DA-4DD1-9AFA-576CDCC4FE65}.Release|x64.Build.0 = Release|Any CPU
 		{FF461395-14DA-4DD1-9AFA-576CDCC4FE65}.Release|x86.ActiveCfg = Release|Any CPU
 		{FF461395-14DA-4DD1-9AFA-576CDCC4FE65}.Release|x86.Build.0 = Release|Any CPU
+		{FF461395-14DA-4DD1-9AFA-576CDCC4FE65}.Storm|Any CPU.ActiveCfg = Release|Any CPU
+		{FF461395-14DA-4DD1-9AFA-576CDCC4FE65}.Storm|Any CPU.Build.0 = Release|Any CPU
+		{FF461395-14DA-4DD1-9AFA-576CDCC4FE65}.Storm|ARM.ActiveCfg = Release|Any CPU
+		{FF461395-14DA-4DD1-9AFA-576CDCC4FE65}.Storm|ARM.Build.0 = Release|Any CPU
+		{FF461395-14DA-4DD1-9AFA-576CDCC4FE65}.Storm|x64.ActiveCfg = Release|Any CPU
+		{FF461395-14DA-4DD1-9AFA-576CDCC4FE65}.Storm|x64.Build.0 = Release|Any CPU
+		{FF461395-14DA-4DD1-9AFA-576CDCC4FE65}.Storm|x86.ActiveCfg = Release|Any CPU
+		{FF461395-14DA-4DD1-9AFA-576CDCC4FE65}.Storm|x86.Build.0 = Release|Any CPU
 		{11243FBD-674F-4B0A-8119-95A5C8708323}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{11243FBD-674F-4B0A-8119-95A5C8708323}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{11243FBD-674F-4B0A-8119-95A5C8708323}.Debug|ARM.ActiveCfg = Debug|Any CPU
@@ -78,6 +100,38 @@ Global
 		{11243FBD-674F-4B0A-8119-95A5C8708323}.Release|x64.Build.0 = Release|Any CPU
 		{11243FBD-674F-4B0A-8119-95A5C8708323}.Release|x86.ActiveCfg = Release|Any CPU
 		{11243FBD-674F-4B0A-8119-95A5C8708323}.Release|x86.Build.0 = Release|Any CPU
+		{11243FBD-674F-4B0A-8119-95A5C8708323}.Storm|Any CPU.ActiveCfg = Release|Any CPU
+		{11243FBD-674F-4B0A-8119-95A5C8708323}.Storm|Any CPU.Build.0 = Release|Any CPU
+		{11243FBD-674F-4B0A-8119-95A5C8708323}.Storm|ARM.ActiveCfg = Release|Any CPU
+		{11243FBD-674F-4B0A-8119-95A5C8708323}.Storm|ARM.Build.0 = Release|Any CPU
+		{11243FBD-674F-4B0A-8119-95A5C8708323}.Storm|x64.ActiveCfg = Release|Any CPU
+		{11243FBD-674F-4B0A-8119-95A5C8708323}.Storm|x64.Build.0 = Release|Any CPU
+		{11243FBD-674F-4B0A-8119-95A5C8708323}.Storm|x86.ActiveCfg = Release|Any CPU
+		{11243FBD-674F-4B0A-8119-95A5C8708323}.Storm|x86.Build.0 = Release|Any CPU
+		{55AE82AF-BB1F-4D2B-BE5A-D5CA6D0E8BF5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{55AE82AF-BB1F-4D2B-BE5A-D5CA6D0E8BF5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{55AE82AF-BB1F-4D2B-BE5A-D5CA6D0E8BF5}.Debug|ARM.ActiveCfg = Debug|Any CPU
+		{55AE82AF-BB1F-4D2B-BE5A-D5CA6D0E8BF5}.Debug|ARM.Build.0 = Debug|Any CPU
+		{55AE82AF-BB1F-4D2B-BE5A-D5CA6D0E8BF5}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{55AE82AF-BB1F-4D2B-BE5A-D5CA6D0E8BF5}.Debug|x64.Build.0 = Debug|Any CPU
+		{55AE82AF-BB1F-4D2B-BE5A-D5CA6D0E8BF5}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{55AE82AF-BB1F-4D2B-BE5A-D5CA6D0E8BF5}.Debug|x86.Build.0 = Debug|Any CPU
+		{55AE82AF-BB1F-4D2B-BE5A-D5CA6D0E8BF5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{55AE82AF-BB1F-4D2B-BE5A-D5CA6D0E8BF5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{55AE82AF-BB1F-4D2B-BE5A-D5CA6D0E8BF5}.Release|ARM.ActiveCfg = Release|Any CPU
+		{55AE82AF-BB1F-4D2B-BE5A-D5CA6D0E8BF5}.Release|ARM.Build.0 = Release|Any CPU
+		{55AE82AF-BB1F-4D2B-BE5A-D5CA6D0E8BF5}.Release|x64.ActiveCfg = Release|Any CPU
+		{55AE82AF-BB1F-4D2B-BE5A-D5CA6D0E8BF5}.Release|x64.Build.0 = Release|Any CPU
+		{55AE82AF-BB1F-4D2B-BE5A-D5CA6D0E8BF5}.Release|x86.ActiveCfg = Release|Any CPU
+		{55AE82AF-BB1F-4D2B-BE5A-D5CA6D0E8BF5}.Release|x86.Build.0 = Release|Any CPU
+		{55AE82AF-BB1F-4D2B-BE5A-D5CA6D0E8BF5}.Storm|Any CPU.ActiveCfg = Release|Any CPU
+		{55AE82AF-BB1F-4D2B-BE5A-D5CA6D0E8BF5}.Storm|Any CPU.Build.0 = Release|Any CPU
+		{55AE82AF-BB1F-4D2B-BE5A-D5CA6D0E8BF5}.Storm|ARM.ActiveCfg = Release|Any CPU
+		{55AE82AF-BB1F-4D2B-BE5A-D5CA6D0E8BF5}.Storm|ARM.Build.0 = Release|Any CPU
+		{55AE82AF-BB1F-4D2B-BE5A-D5CA6D0E8BF5}.Storm|x64.ActiveCfg = Release|Any CPU
+		{55AE82AF-BB1F-4D2B-BE5A-D5CA6D0E8BF5}.Storm|x64.Build.0 = Release|Any CPU
+		{55AE82AF-BB1F-4D2B-BE5A-D5CA6D0E8BF5}.Storm|x86.ActiveCfg = Release|Any CPU
+		{55AE82AF-BB1F-4D2B-BE5A-D5CA6D0E8BF5}.Storm|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

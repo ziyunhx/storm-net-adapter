@@ -1,7 +1,6 @@
-﻿using System;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System.Collections.Generic;
-using Storm.Reflection;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Newtonsoft.Json;
+using System;
 
 namespace Storm.Net.Adapter.UnitTest
 {
@@ -48,7 +47,7 @@ namespace Storm.Net.Adapter.UnitTest
     }
 }";
 
-            StormConfigure result = SimpleJson.DeserializeObject<StormConfigure>(conf);
+            StormConfigure result = JsonConvert.DeserializeObject<StormConfigure>(conf);
             Assert.IsTrue(result.pidDir.Equals("..."));
             Assert.IsTrue(Convert.ToInt32(result.context["taskid"]) == 3);
         }
@@ -87,15 +86,13 @@ namespace Storm.Net.Adapter.UnitTest
     ""tuple"": []
 }";
 
-            string taskid = @"[""1235456"",""asdada""]";
-
-            Command result1 = SimpleJson.DeserializeObject<Command>(command1);
-            Command result2 = SimpleJson.DeserializeObject<Command>(command2);
-            Command result3 = SimpleJson.DeserializeObject<Command>(command3);            
-            Command result4 = SimpleJson.DeserializeObject<Command>(command4);
-            Command result5 = SimpleJson.DeserializeObject<Command>(command5);
-            Command result6 = SimpleJson.DeserializeObject<Command>(command6);
-            Command result7 = SimpleJson.DeserializeObject<Command>(command7);
+            Command result1 = JsonConvert.DeserializeObject<Command>(command1);
+            Command result2 = JsonConvert.DeserializeObject<Command>(command2);
+            Command result3 = JsonConvert.DeserializeObject<Command>(command3);            
+            Command result4 = JsonConvert.DeserializeObject<Command>(command4);
+            Command result5 = JsonConvert.DeserializeObject<Command>(command5);
+            Command result6 = JsonConvert.DeserializeObject<Command>(command6);
+            Command result7 = JsonConvert.DeserializeObject<Command>(command7);
 
             Assert.IsTrue(result1.command.Equals("next"));
             Assert.IsTrue(result2.command.Equals("ack"));

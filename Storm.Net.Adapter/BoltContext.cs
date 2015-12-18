@@ -1,3 +1,4 @@
+using Newtonsoft.Json;
 using System.Collections.Generic;
 
 namespace Storm
@@ -46,13 +47,13 @@ namespace Storm
             if (string.IsNullOrEmpty(taskId))
             {
                 string msg = @"""command"": ""emit"", ""anchors"": {0}, ""stream"": ""{1}"", ""tuple"": {2}";
-                ApacheStorm.SendMsgToParent("{" + string.Format(msg, SimpleJson.SerializeObject(tupleIds), streamId, SimpleJson.SerializeObject(values)) + "}");
+                ApacheStorm.SendMsgToParent("{" + string.Format(msg, JsonConvert.SerializeObject(tupleIds), streamId, JsonConvert.SerializeObject(values)) + "}");
                 ApacheStorm.ReadTaskId();
             }
             else
             {
                 string msg = @"""command"": ""emit"", ""anchors"": {0}, ""stream"": ""{1}"", ""task"": {2}, ""tuple"": {3}";
-                ApacheStorm.SendMsgToParent("{" + string.Format(msg, SimpleJson.SerializeObject(tupleIds), streamId, taskId, SimpleJson.SerializeObject(values)) + "}");
+                ApacheStorm.SendMsgToParent("{" + string.Format(msg, JsonConvert.SerializeObject(tupleIds), streamId, taskId, JsonConvert.SerializeObject(values)) + "}");
             }
         }
 

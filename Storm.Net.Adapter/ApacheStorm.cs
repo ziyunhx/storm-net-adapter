@@ -1,4 +1,4 @@
-﻿using Storm.Reflection;
+﻿using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -106,7 +106,7 @@ namespace Storm
         {
             string message = ReadMsg();
 
-            StormConfigure configure = SimpleJson.DeserializeObject<StormConfigure>(message);
+            StormConfigure configure = JsonConvert.DeserializeObject<StormConfigure>(message);
 
             if(!string.IsNullOrEmpty(configure.pidDir))
                 SendPid(configure.pidDir);
@@ -132,14 +132,20 @@ namespace Storm
                     string msg = ReadMsg();
 
                     //deserialize and verify the type.
-                    object jsonObject = SimpleJson.DeserializeObject(msg);
-                    if (!ReflectionUtils.IsAssignableFrom(jsonObject.GetType(), typeof(JsonArray)))
+                    object jsonObject = JsonConvert.DeserializeObject(msg);
+                    if (!jsonObject.GetType().IsArray)
                     {
-                        Command stormCommand = SimpleJson.DeserializeObject<Command>(msg);
+                        Command stormCommand = JsonConvert.DeserializeObject<Command>(msg);
 
                         //verify the tuple.
                         if (stormCommand.tuple != null && stormCommand.tuple.Length > 0)
+                        {
                             ApacheStorm.ctx.CheckInputSchema(stormCommand.stream, stormCommand.tuple.Length);
+                            for (int i = 0; i < stormCommand.tuple.Length; i++)
+                            {
+                                stormCommand.tuple[i] = JsonConvert.DeserializeObject(JsonConvert.SerializeObject(stormCommand.tuple[i]), ctx._schemaByCSharp.InputStreamSchema[stormCommand.stream][i]);
+                            }
+                        }
 
                         return stormCommand;
                     }
@@ -170,14 +176,20 @@ namespace Storm
                     string msg = ReadMsg();
 
                     //deserialize and verify the type.
-                    object jsonObject = SimpleJson.DeserializeObject(msg);
-                    if (!ReflectionUtils.IsAssignableFrom(jsonObject.GetType(), typeof(JsonArray)))
+                    object jsonObject = JsonConvert.DeserializeObject(msg);
+                    if (!jsonObject.GetType().IsArray)
                     {
-                        Command stormCommand = SimpleJson.DeserializeObject<Command>(msg);
+                        Command stormCommand = JsonConvert.DeserializeObject<Command>(msg);
 
                         //verify the tuple.
                         if (stormCommand.tuple != null && stormCommand.tuple.Length > 0)
+                        {
                             ApacheStorm.ctx.CheckInputSchema(stormCommand.stream, stormCommand.tuple.Length);
+                            for (int i = 0; i < stormCommand.tuple.Length; i++)
+                            {
+                                stormCommand.tuple[i] = JsonConvert.DeserializeObject(JsonConvert.SerializeObject(stormCommand.tuple[i]), ctx._schemaByCSharp.InputStreamSchema[stormCommand.stream][i]);
+                            }
+                        }
 
                         pendingCommands.Enqueue(stormCommand);
                     }
