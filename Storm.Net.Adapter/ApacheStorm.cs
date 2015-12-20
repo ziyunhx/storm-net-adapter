@@ -132,8 +132,8 @@ namespace Storm
                     string msg = ReadMsg();
 
                     //deserialize and verify the type.
-                    object jsonObject = JsonConvert.DeserializeObject(msg);
-                    if (!jsonObject.GetType().IsArray)
+                    //object jsonObject = JsonConvert.DeserializeObject(msg);
+                    if (!msg.StartsWith("["))
                     {
                         Command stormCommand = JsonConvert.DeserializeObject<Command>(msg);
 
@@ -151,7 +151,7 @@ namespace Storm
                     }
                     else
                     {
-                        string[] taskIds = jsonObject as string[];
+                        string[] taskIds = JsonConvert.DeserializeObject<string[]>(msg);
                         if (taskIds == null || taskIds.Length == 0)
                             pendingTaskIds.Enqueue(" ");
                         else
@@ -176,8 +176,8 @@ namespace Storm
                     string msg = ReadMsg();
 
                     //deserialize and verify the type.
-                    object jsonObject = JsonConvert.DeserializeObject(msg);
-                    if (!jsonObject.GetType().IsArray)
+                    //object jsonObject = JsonConvert.DeserializeObject(msg);
+                    if (!msg.StartsWith("["))
                     {
                         Command stormCommand = JsonConvert.DeserializeObject<Command>(msg);
 
@@ -195,7 +195,7 @@ namespace Storm
                     }
                     else
                     {
-                        string[] taskIds = jsonObject as string[];
+                        string[] taskIds = JsonConvert.DeserializeObject<string[]>(msg);
                         if (taskIds == null || taskIds.Length == 0)
                             return "";
                         else
