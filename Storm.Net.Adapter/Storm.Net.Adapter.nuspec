@@ -2,7 +2,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
   <metadata>
     <id>Storm.Net.Adapter</id>
-    <version>1.3.0</version>
+    <version>1.4.1</version>
     <title>Storm.Net.Adapter</title>
     <authors>Carey Tzou</authors>
     <owners>Taikor</owners>
