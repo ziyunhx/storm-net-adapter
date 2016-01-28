@@ -8,6 +8,7 @@
     <owners>Taikor</owners>
     <licenseUrl>http://www.apache.org/licenses/LICENSE-2.0.html</licenseUrl>
     <projectUrl>https://github.com/ziyunhx/storm-net-adapter</projectUrl>
+	<iconUrl>http://www.tnidea.com/media/image/storm-black.png</iconUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>A csharp adapter for apache storm.</description>
     <copyright>Copyright © Taikor 2015</copyright>
