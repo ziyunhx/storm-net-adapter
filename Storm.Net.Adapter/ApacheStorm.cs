@@ -11,7 +11,7 @@ namespace Storm
     {
         public static Context ctx;
         public static Queue<Command> pendingCommands = new Queue<Command>();
-        public static Queue<String> pendingTaskIds = new Queue<string>();
+        public static Queue<string> pendingTaskIds = new Queue<string>();
 
         public static void LaunchPlugin(newPlugin createDelegate)
 		{
@@ -132,7 +132,6 @@ namespace Storm
                     string msg = ReadMsg();
 
                     //deserialize and verify the type.
-                    //object jsonObject = JsonConvert.DeserializeObject(msg);
                     if (!msg.StartsWith("["))
                     {
                         Command stormCommand = JsonConvert.DeserializeObject<Command>(msg);
@@ -176,7 +175,6 @@ namespace Storm
                     string msg = ReadMsg();
 
                     //deserialize and verify the type.
-                    //object jsonObject = JsonConvert.DeserializeObject(msg);
                     if (!msg.StartsWith("["))
                     {
                         Command stormCommand = JsonConvert.DeserializeObject<Command>(msg);
