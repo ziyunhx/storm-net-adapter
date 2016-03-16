@@ -18,16 +18,11 @@
 package storm.starter;
 
 import backtype.storm.Config;
-import backtype.storm.LocalCluster;
-import backtype.storm.LocalDRPC;
 import backtype.storm.StormSubmitter;
 import backtype.storm.drpc.DRPCSpout;
-import backtype.storm.drpc.LinearDRPCTopologyBuilder;
 import backtype.storm.drpc.ReturnResults;
-import backtype.storm.spout.ShellSpout;
 import backtype.storm.task.ShellBolt;
 import backtype.storm.topology.IRichBolt;
-import backtype.storm.topology.IRichSpout;
 import backtype.storm.topology.OutputFieldsDeclarer;
 import backtype.storm.topology.TopologyBuilder;
 import backtype.storm.tuple.Fields;
@@ -37,11 +32,11 @@ import java.util.Map;
 /**
  * This topology demonstrates Storm's stream groupings and multilang capabilities.
  */
-public class DrpcTestTopologyCsharp {
+public class DrpcTestTopologyPython {
 	public static class SimpleDRPC extends ShellBolt implements IRichBolt {
 
 		public SimpleDRPC() {
-			super("mono", "StormSample.exe", "SimpleDRPC");
+			super("python", "sampledrpc.py");
 		}
 
 		@Override
@@ -58,7 +53,7 @@ public class DrpcTestTopologyCsharp {
 	public static void main(String[] args) throws Exception {
 	  	TopologyBuilder builder = new TopologyBuilder();
 		  
-	  	DRPCSpout drpcSpout = new DRPCSpout("simpledrpc");
+	  	DRPCSpout drpcSpout = new DRPCSpout("simplepydrpc");
 	    builder.setSpout("drpc-input", drpcSpout,1);
 
 	    builder.setBolt("simple", new SimpleDRPC(), 2)
@@ -73,7 +68,7 @@ public class DrpcTestTopologyCsharp {
 	    
 	    try
 	    {
-	    	StormSubmitter.submitTopology("drpc-q", conf,builder.createTopology());
+	    	StormSubmitter.submitTopology("drpc-py", conf,builder.createTopology());
 	    }
 	    catch (Exception e)
 	    {

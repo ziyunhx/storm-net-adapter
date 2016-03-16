@@ -189,3 +189,5 @@ Storm.Net.Adapter.sln.ide/
 */.settings/
 */.project
 /.settings
+
+**/.idea/*
