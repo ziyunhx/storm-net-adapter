@@ -239,9 +239,7 @@ public class BlobStoreAPIWordCountTopology {
         BufferedReader br = new BufferedReader(new FileReader(file));
         while ((line = br.readLine()) != null) {
             fileContent.append(line);
-            //System.lineSeparator()  is a JAVA 1.7 feature.  System.getProperty("line.separator") is the correct way to do it pre 1.7
-            //fileContent.append(System.lineSeparator());
-            fileContent.append(System.getProperty("line.separator"));
+            fileContent.append(System.lineSeparator());
         }
         return fileContent;
     }
@@ -270,9 +268,7 @@ public class BlobStoreAPIWordCountTopology {
         Iterator<String> iter = content.iterator();
         while(iter.hasNext()) {
             bw.write(iter.next());
-            //System.lineSeparator()  is a JAVA 1.7 feature.  System.getProperty("line.separator") is the correct way to do it pre 1.7
-            //bw.write(System.lineSeparator());
-            bw.write(System.getProperty("line.separator"));
+            bw.write(System.lineSeparator());
         }
         bw.close();
     }

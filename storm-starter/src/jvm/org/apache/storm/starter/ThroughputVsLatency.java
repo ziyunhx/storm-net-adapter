@@ -46,6 +46,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.atomic.AtomicLong;
 
 import org.apache.storm.metrics.hdrhistogram.HistogramMetric;
@@ -145,7 +146,7 @@ public class ThroughputVsLatency {
     @Override
     public void open(Map conf, TopologyContext context, SpoutOutputCollector collector) {
       _collector = collector;
-      _rand = new Random();
+      _rand = ThreadLocalRandom.current();
       _nextEmitTime = System.nanoTime();
       _emitsLeft = _emitAmount;
       _histo = new HistogramMetric(3600000000000L, 3);
