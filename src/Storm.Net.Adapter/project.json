@@ -1,0 +1,40 @@
+﻿{
+  "name": "Storm.Net.Adapter",
+  "title": "Storm.Net.Adapter",
+  "copyright": "Haodu 2016",
+  "language": "en-US",
+  "version": "2.0.1-*",
+  "description": "A csharp adapter for apache storm.",
+  "authors": [ "Carey" ],
+  "tags": [ "storm", "storm-net-adapter" ],
+  "projectUrl": "https://github.com/ziyunhx/storm-net-adapter",
+  "licenseUrl": "http://www.apache.org/licenses/LICENSE-2.0.html",
+  "iconUrl": "http://www.tnidea.com/media/image/storm-black.png",
+  "authors": [ "Carey Tzou" ],
+  "owners": [ "Carey", "Haodu" ],
+  "releaseNotes": "upgrade the json parser and fix some bugs.",
+
+  "dependencies": {
+    "ApacheThrift": "0.9.3",
+    "Newtonsoft.Json": "9.0.1"
+  },
+
+  "frameworks": {
+    "net40": {},
+    "net452": {},
+    "net461": {}
+    /*,
+    "netcoreapp1.0": {
+      "dependencies": {
+        "Microsoft.NETCore.App": {
+          "type": "platform",
+          "version": "1.0.0"
+        }
+      },
+      "imports": [
+        "net461",
+        "dnxcore50"
+      ]
+    }*/
+  }
+}
