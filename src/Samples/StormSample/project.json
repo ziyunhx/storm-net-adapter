@@ -1,0 +1,14 @@
+﻿{
+  "version": "1.0.0-*",
+  "buildOptions": {
+    "emitEntryPoint": true
+  },
+
+  "dependencies": {
+    "Storm.Net.Adapter": "2.0.1"
+  },
+
+  "frameworks": {
+    "net452": {}
+  }
+}

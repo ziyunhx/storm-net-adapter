@@ -1,12 +1,14 @@
-﻿using Storm;
-using System;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
+using Storm;
 
 namespace StormSample
 {
-    class Program
+    public class Program
     {
-        static void Main(string[] args)
+        public static void Main(string[] args)
         {
             if (args.Count() > 0)
             {
