@@ -191,3 +191,4 @@ Storm.Net.Adapter.sln.ide/
 /.settings
 
 **/.idea/*
+project.lock.json
