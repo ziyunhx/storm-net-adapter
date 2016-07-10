@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿#if !NETSTANDARD13
+using System.Text;
 
 namespace Storm.DRPC
 {
@@ -49,3 +50,4 @@ namespace Storm.DRPC
         public bool ValidateWhiledIdle { get; set; }
     }
 }
+#endif

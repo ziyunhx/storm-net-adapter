@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿#if !NETSTANDARD13
+using System.Collections.Generic;
 
 namespace Storm.DRPC
 {
@@ -21,3 +22,4 @@ namespace Storm.DRPC
         DRPC_INVOCATIONS = 3,
     }
 }
+#endif
