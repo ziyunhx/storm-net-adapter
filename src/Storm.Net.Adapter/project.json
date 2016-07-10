@@ -3,7 +3,7 @@
   "title": "Storm.Net.Adapter",
   "copyright": "Haodu 2016",
   "language": "en-US",
-  "version": "2.0.1-*",
+  "version": "2.0.3-*",
   "description": "A csharp adapter for apache storm.",
   "authors": [ "Carey" ],
   "tags": [ "storm", "storm-net-adapter" ],
@@ -21,6 +21,9 @@
     "net40": {
       "dependencies": {
         "ApacheThrift": "0.9.3"
+      },
+      "compilationOptions": {
+        "define": [ "NETFRAMEWORK4" ]
       }
     },
     "net45": {
@@ -42,8 +45,7 @@
       "dependencies": {
         "ApacheThrift": "0.9.3"
       }
-    }
-    /*,
+    },
     "netstandard1.3": {
       "dependencies": {
         "Microsoft.CSharp": "4.0.1",
@@ -77,6 +79,6 @@
       "compilationOptions": {
         "define": [ "NETSTANDARD13" ]
       }
-    }*/
+    }
   }
 }

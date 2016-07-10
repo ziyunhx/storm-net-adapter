@@ -3,7 +3,9 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Reflection;
 using System.Text;
+using System.Linq;
 
 namespace Storm
 {
@@ -14,12 +16,16 @@ namespace Storm
         public static Queue<string> pendingTaskIds = new Queue<string>();
 
         public static void LaunchPlugin(newPlugin createDelegate)
-		{
+        {
             TopologyContext context = null;
             Config config = new Config();
 
             Context.pluginType = PluginType.UNKNOW;
-            Type classType = createDelegate.Method.ReturnType;   
+#if NETFRAMEWORK4
+            Type classType = createDelegate.Method.ReturnType;
+#else
+            Type classType = createDelegate.GetMethodInfo().ReturnType;
+#endif
             Type[] interfaces = classType.GetInterfaces();
 
             foreach (Type eachType in interfaces)
@@ -40,47 +46,47 @@ namespace Storm
                     break;
                 }
             }
-            
+
             InitComponent(ref config, ref context);
             Context.Config = config;
             Context.TopologyContext = context;
 
-			PluginType pluginType = Context.pluginType;
-			Context.Logger.Info("LaunchPlugin, pluginType: {0}", new object[]
-			{
-				pluginType
-			});
+            PluginType pluginType = Context.pluginType;
+            Context.Logger.Info("LaunchPlugin, pluginType: {0}", new object[]
+            {
+                pluginType
+            });
 
-			switch (pluginType)
-			{
-				case PluginType.SPOUT:
-				{
-					Spout spout = new Spout(createDelegate);
-                    spout.Launch();
-					return;
-				}
-				case PluginType.BOLT:
-				{
-					Bolt bolt = new Bolt(createDelegate);
-                    bolt.Launch();
-					return;
-				}
+            switch (pluginType)
+            {
+                case PluginType.SPOUT:
+                    {
+                        Spout spout = new Spout(createDelegate);
+                        spout.Launch();
+                        return;
+                    }
+                case PluginType.BOLT:
+                    {
+                        Bolt bolt = new Bolt(createDelegate);
+                        bolt.Launch();
+                        return;
+                    }
                 case PluginType.BASICBOLT:
-                {
-                    BasicBolt basicBolt = new BasicBolt(createDelegate);
-                    basicBolt.Launch();
-                    return;
-                }
-				default:
-				{
-					Context.Logger.Error("unexpected pluginType: {0}!", new object[]
-					{
-						pluginType
-					});
-                    return;
-				}
-			}
-		}
+                    {
+                        BasicBolt basicBolt = new BasicBolt(createDelegate);
+                        basicBolt.Launch();
+                        return;
+                    }
+                default:
+                    {
+                        Context.Logger.Error("unexpected pluginType: {0}!", new object[]
+                        {
+                        pluginType
+                        });
+                        return;
+                    }
+            }
+        }
 
 
         /// <summary>
@@ -108,7 +114,7 @@ namespace Storm
 
             StormConfigure configure = JsonConvert.DeserializeObject<StormConfigure>(message);
 
-            if(!string.IsNullOrEmpty(configure.pidDir))
+            if (!string.IsNullOrEmpty(configure.pidDir))
                 SendPid(configure.pidDir);
 
             config.StormConf = configure.conf;
@@ -225,7 +231,7 @@ namespace Storm
                 do
                 {
                     byte[] _bytes = new byte[1];
-                    int outputLength = inputStream.Read(_bytes, 0, 1);                    
+                    int outputLength = inputStream.Read(_bytes, 0, 1);
                     if (outputLength < 1 || _bytes[0] == 10)
                         break;
 
@@ -282,34 +288,34 @@ namespace Storm
             Process currentProcess = Process.GetCurrentProcess();
             int pid = currentProcess.Id;
             File.WriteAllText(heartBeatDir + "/" + pid.ToString(), "");
-            SendMsgToParent("{\"pid\": " + pid.ToString() + "}");            
+            SendMsgToParent("{\"pid\": " + pid.ToString() + "}");
         }
     }
 
     public class Spout
     {
-		private newPlugin _createDelegate;
-		private ISpout _spout;
+        private newPlugin _createDelegate;
+        private ISpout _spout;
         public Spout(newPlugin createDelegate)
-		{
-			this._createDelegate = createDelegate;
-		}
-		public void Launch()
-		{
-			Context.Logger.Info("[Spout] Launch ...");
+        {
+            this._createDelegate = createDelegate;
+        }
+        public void Launch()
+        {
+            Context.Logger.Info("[Spout] Launch ...");
             ApacheStorm.ctx = new SpoutContext();
             IPlugin iPlugin = this._createDelegate(ApacheStorm.ctx);
-			if (!(iPlugin is ISpout))
-			{
-				Context.Logger.Error("[Spout] newPlugin must return ISpout!");
-			}
-			this._spout = (ISpout)iPlugin;
+            if (!(iPlugin is ISpout))
+            {
+                Context.Logger.Error("[Spout] newPlugin must return ISpout!");
+            }
+            this._spout = (ISpout)iPlugin;
             //call Open method.
             this._spout.Open(Context.Config, Context.TopologyContext);
 
-			Stopwatch stopwatch = new Stopwatch();
-			while (true)
-			{
+            Stopwatch stopwatch = new Stopwatch();
+            while (true)
+            {
                 try
                 {
                     stopwatch.Start();
@@ -339,35 +345,35 @@ namespace Storm
                 {
                     Context.Logger.Error(ex.ToString());
                 }
-			}
-		}
+            }
+        }
     }
 
     public class Bolt
     {
-		private newPlugin _createDelegate;
-		private IBolt _bolt;
-		
-		public Bolt(newPlugin createDelegate)
-		{
-			this._createDelegate = createDelegate;
-		}
-		public void Launch()
-		{
-			Context.Logger.Info("[Bolt] Launch ...");
+        private newPlugin _createDelegate;
+        private IBolt _bolt;
+
+        public Bolt(newPlugin createDelegate)
+        {
+            this._createDelegate = createDelegate;
+        }
+        public void Launch()
+        {
+            Context.Logger.Info("[Bolt] Launch ...");
             ApacheStorm.ctx = new BoltContext();
             IPlugin iPlugin = this._createDelegate(ApacheStorm.ctx);
-			if (!(iPlugin is IBolt))
-			{
-				Context.Logger.Error("[Bolt] newPlugin must return IBolt!");
-			}
-			this._bolt = (IBolt)iPlugin;
+            if (!(iPlugin is IBolt))
+            {
+                Context.Logger.Error("[Bolt] newPlugin must return IBolt!");
+            }
+            this._bolt = (IBolt)iPlugin;
 
             try
             {
                 //call Prepare method.
                 this._bolt.Prepare(Context.Config, Context.TopologyContext);
- 
+
                 while (true)
                 {
                     StormTuple tuple = ApacheStorm.ReadTuple();
@@ -383,7 +389,7 @@ namespace Storm
             {
                 Context.Logger.Error(ex.ToString());
             }
-		}
+        }
     }
 
     public class BasicBolt
