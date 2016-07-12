@@ -71,7 +71,7 @@ Getting started
 Remote DRPC
 =============
 
- * .Net Core is not yet supported.
+ .Net Core is not yet supported.
 
  Storm.Net.Adapter is also support DRPC now. You can call the remote DRPC like this:
 
