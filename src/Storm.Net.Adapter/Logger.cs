@@ -1,4 +1,6 @@
-﻿namespace Storm
+﻿using Newtonsoft.Json;
+
+namespace Storm
 {
     public class Logger
     {
@@ -32,7 +34,12 @@
         }
         private void SendLog(string Message, int level = 2)
         {
-            ApacheStorm.SendMsgToParent("{\"command\": \"log\", \"msg\": \"" + classMsg + Message + "\", \"level\":" + level + "}");
+            LoggerMsg message = new LoggerMsg();
+            message.command = "log";
+            message.msg = classMsg + Message;
+            message.level = level;
+
+            ApacheStorm.SendMsgToParent(JsonConvert.SerializeObject(message));
         }
 
         private string FromatMessage(string Message, params object[] args)
@@ -47,5 +54,12 @@
 
             return message;
         }
+    }
+
+    public class LoggerMsg
+    {
+        public string command { set; get; }
+        public string msg { set; get; }
+        public int level { set; get; } 
     }
 }

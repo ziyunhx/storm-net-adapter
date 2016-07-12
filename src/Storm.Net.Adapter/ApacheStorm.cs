@@ -239,7 +239,7 @@ namespace Storm
                 }
                 while (true);
 
-                string line = Encoding.UTF8.GetString(bytes.ToArray());
+                string line = Encoding.UTF8.GetString(bytes.ToArray()).TrimEnd('\r');
 
                 if (string.IsNullOrEmpty(line))
                     Context.Logger.Error("Read EOF from stdin");
