@@ -5,7 +5,7 @@
   },
 
   "dependencies": {
-    "Storm.Net.Adapter": "2.0.1"
+    "Storm.Net.Adapter": "2.0.4"
   },
 
   "frameworks": {
