@@ -12,7 +12,7 @@
   "iconUrl": "http://www.tnidea.com/media/image/storm-black.png",
   "authors": [ "Carey Tzou" ],
   "owners": [ "Carey", "Haodu" ],
-  "releaseNotes": "upgrade the json parser and fix some bugs.",
+  "releaseNotes": "add dotnet core support and fix some bugs.",
 
   "dependencies": {
     "Newtonsoft.Json": "9.0.1"
