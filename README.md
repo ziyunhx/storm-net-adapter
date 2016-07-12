@@ -10,7 +10,7 @@ For more information, please check the storm homepage and my personal blog at: [
 Requirements
 ============
 
-* .Net Framework / Mono
+* .Net Framework / Mono / .Net Core
 * Thrift 0.9.x
 * Python 2.x, JDK 1.6+, Maven 3.x
 * Storm 0.7.1+, Zookeeper
@@ -44,7 +44,7 @@ Getting started
 
 
 
-- Add spout classes based on ISpout and add bolt classes based on IBolt or IBasicBolt, Both of those need using Storm. For more information check the [StormSample project](https://github.com/ziyunhx/storm-net-adapter/tree/master/samples/StormSample "StormSample Project").
+- Add spout classes based on ISpout and add bolt classes based on IBolt or IBasicBolt, Both of those need using Storm. For more information check the [StormSample project](https://github.com/ziyunhx/storm-net-adapter/tree/master/src/Samples/StormSample "StormSample Project").
 
 - Build your project and copy the resources to storm topology project. Create a java topology class. For more information check the [storm-starter](https://github.com/ziyunhx/storm-net-adapter/tree/master/storm-starter "storm-starter").
 
@@ -56,16 +56,22 @@ Getting started
 		
 		super("mono", "StormSimple.exe", "generator");
 
+- Under Linux, Mac OSX, Windows(.net core) call your spout or bolt as follows:
+		
+		super("dotnet", "StormSimple.dll", "generator");
+
 - Package your topology project using Maven:
 
     	$ mvn package
 
 - You can submit (run) a topology contained in this uberjar to Storm via the `storm` CLI tool:
 
-		$ storm jar storm-starter-*-jar-with-dependencies.jar storm.starter.WordCountTopologyCsharp wordcount
+		$ storm jar storm-starter-*.jar org.apache.storm.starter.WordCountTopologyCsharp wordcount
 
 Remote DRPC
 =============
+
+ * .Net Core is not yet supported.
 
  Storm.Net.Adapter is also support DRPC now. You can call the remote DRPC like this:
 

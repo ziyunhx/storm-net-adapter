@@ -3,7 +3,7 @@
   "title": "Storm.Net.Adapter",
   "copyright": "Haodu 2016",
   "language": "en-US",
-  "version": "2.0.3-*",
+  "version": "2.0.4-*",
   "description": "A csharp adapter for apache storm.",
   "authors": [ "Carey" ],
   "tags": [ "storm", "storm-net-adapter" ],

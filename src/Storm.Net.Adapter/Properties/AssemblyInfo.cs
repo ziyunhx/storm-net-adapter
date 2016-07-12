@@ -9,7 +9,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyDescription("A csharp adapter for apache storm.")]
 [assembly: AssemblyCompany("Haodu Inc.")]
 [assembly: AssemblyProduct("Storm.Net.Adapter")]
-[assembly: AssemblyCopyright("Copyright © Haodu 2015")]
+[assembly: AssemblyCopyright("Copyright © Haodu 2016")]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
 [assembly: Guid("e322d149-de81-476c-8349-74c74a96c1a4")]
@@ -24,5 +24,5 @@ using System.Runtime.InteropServices;
 // You can specify all the values or you can default the Build and Revision Numbers 
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("2.0.1.0")]
-[assembly: AssemblyFileVersion("2.0.1.1001")]
+[assembly: AssemblyVersion("2.0.4.0")]
+[assembly: AssemblyFileVersion("2.0.4.1001")]
