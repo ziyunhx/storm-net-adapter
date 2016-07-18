@@ -1,5 +1,4 @@
-﻿#if !NETSTANDARD13
-using System;
+﻿using System;
 using Thrift.Protocol;
 using Thrift.Transport;
 
@@ -88,4 +87,3 @@ namespace Storm.DRPC
         }
     }
 }
-#endif
