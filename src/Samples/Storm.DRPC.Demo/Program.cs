@@ -10,7 +10,7 @@ namespace Storm.DRPC.Demo
     {
         public static void Main(string[] args)
         {
-            DRPCClient client = new DRPCClient("mech.palaspom.com", 49772);
+            DRPCClient client = new DRPCClient("host", 3772);
             string result = client.execute("simpledrpc", "hello word");
             Console.WriteLine(result);
             Console.WriteLine("Please input a word and press enter, if you want quit it, press enter only!");
