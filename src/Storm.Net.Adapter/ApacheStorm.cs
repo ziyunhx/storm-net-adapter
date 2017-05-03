@@ -21,7 +21,7 @@ namespace Storm
             Config config = new Config();
 
             Context.pluginType = PluginType.UNKNOW;
-#if NETFRAMEWORK4
+#if NET40
             Type classType = createDelegate.Method.ReturnType;
 #else
             Type classType = createDelegate.GetMethodInfo().ReturnType;

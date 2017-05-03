@@ -10,7 +10,7 @@ For more information, please check the storm homepage and my personal blog at: [
 Requirements
 ============
 
-* .Net Framework / Mono / .Net Core
+* .Net Framework or Mono or .Net Core
 * Thrift 0.9.x
 * Python 2.x, JDK 1.6+, Maven 3.x
 * Storm 0.7.1+, Zookeeper
