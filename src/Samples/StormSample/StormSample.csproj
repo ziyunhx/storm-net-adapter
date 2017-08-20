@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-	<TargetFrameworks Condition="'$(LibraryFrameworks)'==''">net45;net40;net46;net461;netcoreapp1.1</TargetFrameworks>
+	<TargetFrameworks Condition="'$(LibraryFrameworks)'==''">net45;net40;net46;net461;netcoreapp1.1;netcoreapp2.0</TargetFrameworks>
     <TargetFrameworks Condition="'$(LibraryFrameworks)'!=''">$(LibraryFrameworks)</TargetFrameworks>
 	<Description>storm sample demo.</Description>
     <AssemblyTitle>StormSample</AssemblyTitle>

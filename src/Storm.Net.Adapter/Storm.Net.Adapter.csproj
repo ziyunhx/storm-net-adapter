@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-	<TargetFrameworks Condition="'$(LibraryFrameworks)'==''">net45;net40;net46;net461;netstandard1.3</TargetFrameworks>
+	<TargetFrameworks Condition="'$(LibraryFrameworks)'==''">net45;net40;net46;net461;netstandard1.3;netstandard2.0</TargetFrameworks>
     <TargetFrameworks Condition="'$(LibraryFrameworks)'!=''">$(LibraryFrameworks)</TargetFrameworks>
     <Description>A csharp adapter for apache storm.</Description>
     <AssemblyTitle>Storm.Net.Adapter</AssemblyTitle>
@@ -26,7 +26,7 @@
   </PropertyGroup>
   
   <ItemGroup>
-    <PackageReference Include="Newtonsoft.Json" Version="10.0.2" />
+    <PackageReference Include="Newtonsoft.Json" Version="10.0.3" />
   </ItemGroup>
 
   <ItemGroup Condition="'$(TargetFramework)' == 'netstandard1.3'">
@@ -35,9 +35,39 @@
   </ItemGroup>
   
   <ItemGroup Condition="'$(TargetFramework)' == 'net40' OR '$(TargetFramework)' == 'net45' OR '$(TargetFramework)' == 'net46' OR '$(TargetFramework)' == 'net461'">
-    <PackageReference Include="ApacheThrift" Version="0.9.3" />
     <Reference Include="System" />
-	<Reference Include="Microsoft.CSharp" />
+	  <Reference Include="Microsoft.CSharp" />
+  </ItemGroup>
+  
+  <ItemGroup Condition="'$(TargetFramework)' == 'net46'">
+    <PackageReference Include="apache-thrift-netcore">
+      <Version>0.9.3.1</Version>
+    </PackageReference>
+  </ItemGroup>
+  
+  <ItemGroup Condition="'$(TargetFramework)' == 'net45'">
+    <PackageReference Include="apache-thrift-netcore">
+      <Version>0.9.3.1</Version>
+    </PackageReference>
+  </ItemGroup>
+  
+  <ItemGroup Condition="'$(TargetFramework)' == 'net40'">
+    <PackageReference Include="apache-thrift-netcore">
+      <Version>0.9.3.1</Version>
+    </PackageReference>
+  </ItemGroup>
+  
+  <ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
+    <PackageReference Include="System.Diagnostics.Process" Version="4.3.0" />
+    <PackageReference Include="apache-thrift-netcore">
+      <Version>0.9.3.1</Version>
+    </PackageReference>
+  </ItemGroup>
+  
+  <ItemGroup Condition="'$(TargetFramework)' == 'net461'">
+    <PackageReference Include="apache-thrift-netcore">
+      <Version>0.9.3.1</Version>
+    </PackageReference>
   </ItemGroup>
 
 </Project>
