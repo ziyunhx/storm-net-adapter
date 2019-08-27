@@ -1,6 +1,4 @@
-﻿using System.Text;
-
-namespace Storm.DRPC
+﻿namespace Storm.DRPC
 {
     /// <summary>
     /// the thrift config class.

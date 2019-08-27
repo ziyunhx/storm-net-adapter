@@ -5,7 +5,6 @@ using System.Diagnostics;
 using System.IO;
 using System.Reflection;
 using System.Text;
-using System.Linq;
 
 namespace Storm
 {
@@ -21,11 +20,8 @@ namespace Storm
             Config config = new Config();
 
             Context.pluginType = PluginType.UNKNOW;
-#if NET40
-            Type classType = createDelegate.Method.ReturnType;
-#else
+
             Type classType = createDelegate.GetMethodInfo().ReturnType;
-#endif
             Type[] interfaces = classType.GetInterfaces();
 
             foreach (Type eachType in interfaces)
@@ -289,151 +285,6 @@ namespace Storm
             int pid = currentProcess.Id;
             File.WriteAllText(heartBeatDir + "/" + pid.ToString(), "");
             SendMsgToParent("{\"pid\": " + pid.ToString() + "}");
-        }
-    }
-
-    public class Spout
-    {
-        private newPlugin _createDelegate;
-        private ISpout _spout;
-        public Spout(newPlugin createDelegate)
-        {
-            this._createDelegate = createDelegate;
-        }
-        public void Launch()
-        {
-            Context.Logger.Info("[Spout] Launch ...");
-            ApacheStorm.ctx = new SpoutContext();
-            IPlugin iPlugin = this._createDelegate(ApacheStorm.ctx);
-            if (!(iPlugin is ISpout))
-            {
-                Context.Logger.Error("[Spout] newPlugin must return ISpout!");
-            }
-            this._spout = (ISpout)iPlugin;
-            //call Open method.
-            this._spout.Open(Context.Config, Context.TopologyContext);
-
-            Stopwatch stopwatch = new Stopwatch();
-            while (true)
-            {
-                try
-                {
-                    stopwatch.Start();
-                    Command command = ApacheStorm.ReadCommand();
-                    if (command.command == "next")
-                    {
-                        this._spout.NextTuple();
-                    }
-                    else if (command.command == "ack")
-                    {
-                        long seqId = long.Parse(command.id);
-                        this._spout.Ack(seqId);
-                    }
-                    else if (command.command == "fail")
-                    {
-                        long seqId = long.Parse(command.id);
-                        this._spout.Fail(seqId);
-                    }
-                    else
-                    {
-                        Context.Logger.Error("[Spout] unexpected message.");
-                    }
-                    ApacheStorm.Sync();
-                    stopwatch.Stop();
-                }
-                catch (Exception ex)
-                {
-                    Context.Logger.Error(ex.ToString());
-                }
-            }
-        }
-    }
-
-    public class Bolt
-    {
-        private newPlugin _createDelegate;
-        private IBolt _bolt;
-
-        public Bolt(newPlugin createDelegate)
-        {
-            this._createDelegate = createDelegate;
-        }
-        public void Launch()
-        {
-            Context.Logger.Info("[Bolt] Launch ...");
-            ApacheStorm.ctx = new BoltContext();
-            IPlugin iPlugin = this._createDelegate(ApacheStorm.ctx);
-            if (!(iPlugin is IBolt))
-            {
-                Context.Logger.Error("[Bolt] newPlugin must return IBolt!");
-            }
-            this._bolt = (IBolt)iPlugin;
-
-            try
-            {
-                //call Prepare method.
-                this._bolt.Prepare(Context.Config, Context.TopologyContext);
-
-                while (true)
-                {
-                    StormTuple tuple = ApacheStorm.ReadTuple();
-                    if (tuple.IsHeartBeatTuple())
-                        ApacheStorm.Sync();
-                    else
-                    {
-                        this._bolt.Execute(tuple);
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                Context.Logger.Error(ex.ToString());
-            }
-        }
-    }
-
-    public class BasicBolt
-    {
-        private newPlugin _createDelegate;
-        private IBasicBolt _bolt;
-
-        public BasicBolt(newPlugin createDelegate)
-        {
-            this._createDelegate = createDelegate;
-        }
-        public void Launch()
-        {
-            Context.Logger.Info("[BasicBolt] Launch ...");
-            ApacheStorm.ctx = new BoltContext();
-            IPlugin iPlugin = this._createDelegate(ApacheStorm.ctx);
-            if (!(iPlugin is IBasicBolt))
-            {
-                Context.Logger.Error("[BasicBolt] newPlugin must return IBasicBolt!");
-            }
-            this._bolt = (IBasicBolt)iPlugin;
-
-            //call Prepare method.
-            this._bolt.Prepare(Context.Config, Context.TopologyContext);
-
-            while (true)
-            {
-                StormTuple tuple = ApacheStorm.ReadTuple();
-                if (tuple.IsHeartBeatTuple())
-                    ApacheStorm.Sync();
-                else
-                {
-                    try
-                    {
-                        this._bolt.Execute(tuple);
-                        ApacheStorm.ctx.Ack(tuple);
-                    }
-                    catch (Exception ex)
-                    {
-                        Context.Logger.Error(ex.ToString());
-                        ApacheStorm.ctx.Fail(tuple);
-                    }
-                }
-            }
         }
     }
 }

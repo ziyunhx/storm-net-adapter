@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace Storm.DRPC
+﻿namespace Storm.DRPC
 {
     /// <summary>
     /// the thrift connection type

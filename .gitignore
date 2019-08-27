@@ -193,3 +193,4 @@ Storm.Net.Adapter.sln.ide/
 
 **/.idea/*
 project.lock.json
+/.vscode

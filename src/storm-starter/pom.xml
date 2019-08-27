@@ -20,11 +20,10 @@
   <parent>
       <artifactId>storm</artifactId>
       <groupId>org.apache.storm</groupId>
-      <version>1.0.1</version>
+      <version>2.1.0</version>
       <relativePath>../../pom.xml</relativePath>
   </parent>
 
-  <groupId>org.apache.storm</groupId>
   <artifactId>storm-starter</artifactId>
   <packaging>jar</packaging>
 
@@ -32,29 +31,13 @@
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <!-- see comment below... This fixes an annoyance with intellij -->
-    <provided.scope>provided</provided.scope>
     <hbase.version>0.98.4-hadoop2</hbase.version>
   </properties>
-
-  <profiles>
-    <profile>
-        <id>intellij</id>
-        <properties>
-            <provided.scope>compile</provided.scope>
-        </properties>
-    </profile>
-  </profiles>
 
   <dependencies>
     <dependency>
       <groupId>org.hdrhistogram</groupId>
       <artifactId>HdrHistogram</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.testng</groupId>
@@ -63,9 +46,12 @@
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>org.mockito</groupId>
-      <artifactId>mockito-all</artifactId>
-      <scope>test</scope>
+        <groupId>org.mockito</groupId>
+        <artifactId>mockito-core</artifactId>
+    </dependency>
+    <dependency>
+        <groupId>org.hamcrest</groupId>
+        <artifactId>java-hamcrest</artifactId>
     </dependency>
     <dependency>
       <groupId>org.easytesting</groupId>
@@ -80,23 +66,29 @@
       <scope>test</scope>
     </dependency>
     <dependency>
-     <groupId>org.twitter4j</groupId>
-     <artifactId>twitter4j-stream</artifactId>
-     <version>3.0.3</version>
+        <groupId>org.apache.storm</groupId>
+        <artifactId>storm-clojure</artifactId>
+        <version>${project.version}</version>
+    </dependency>
+    <dependency>
+        <groupId>org.apache.storm</groupId>
+        <artifactId>storm-clojure-test</artifactId>
+        <version>${project.version}</version>
+        <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.storm</groupId>
-      <artifactId>storm-core</artifactId>
+      <artifactId>storm-client</artifactId>
       <version>${project.version}</version>
-      <!--
-        Use "provided" scope to keep storm out of the jar-with-dependencies
-        For IntelliJ dev, intellij will load properly.
-      -->
+        <!--
+          Use "provided" scope to keep storm out of the jar-with-dependencies
+          For IntelliJ dev, intellij will load properly.
+        -->
         <scope>${provided.scope}</scope>
     </dependency>
       <dependency>
           <groupId>org.apache.storm</groupId>
-          <artifactId>storm-core</artifactId>
+          <artifactId>storm-client</artifactId>
           <version>${project.version}</version>
           <type>test-jar</type>
           <scope>test</scope>
@@ -119,7 +111,6 @@
     <dependency>
       <groupId>commons-collections</groupId>
       <artifactId>commons-collections</artifactId>
-      <version>3.2.1</version>
     </dependency>
     <dependency>
       <groupId>com.google.guava</groupId>
@@ -132,12 +123,6 @@
     </dependency>
     <dependency>
       <groupId>org.apache.storm</groupId>
-      <artifactId>storm-kafka</artifactId>
-      <version>${project.version}</version>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.storm</groupId>
       <artifactId>storm-hdfs</artifactId>
       <version>${project.version}</version>
     </dependency>
@@ -146,15 +131,6 @@
           <artifactId>storm-hbase</artifactId>
           <version>${project.version}</version>
       </dependency>
-    <dependency>
-      <groupId>org.apache.kafka</groupId>
-      <artifactId>${kafka.artifact.id}</artifactId>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.kafka</groupId>
-      <artifactId>kafka-clients</artifactId>
-    </dependency>
     <dependency>
       <groupId>org.apache.storm</groupId>
       <artifactId>storm-redis</artifactId>
@@ -177,6 +153,23 @@
             <artifactId>maven-shade-plugin</artifactId>
             <configuration>
                 <createDependencyReducedPom>true</createDependencyReducedPom>
+                <filters>
+                    <filter>
+                        <artifact>*:*</artifact>
+                        <excludes>
+                            <exclude>META-INF/*.SF</exclude>
+                            <exclude>META-INF/*.sf</exclude>
+                            <exclude>META-INF/*.DSA</exclude>
+                            <exclude>META-INF/*.dsa</exclude>
+                            <exclude>META-INF/*.RSA</exclude>
+                            <exclude>META-INF/*.rsa</exclude>
+                            <exclude>META-INF/*.EC</exclude>
+                            <exclude>META-INF/*.ec</exclude>
+                            <exclude>META-INF/MSFTSIG.SF</exclude>
+                            <exclude>META-INF/MSFTSIG.RSA</exclude>
+                        </excludes>
+                    </filter>
+                </filters>
             </configuration>
             <executions>
                 <execution>
@@ -194,8 +187,7 @@
                 </execution>
             </executions>
         </plugin>
-
-      <plugin>
+        <plugin>
         <groupId>com.theoryinpractise</groupId>
         <artifactId>clojure-maven-plugin</artifactId>
         <extensions>true</extensions>
@@ -203,6 +195,9 @@
           <sourceDirectories>
             <sourceDirectory>src/clj</sourceDirectory>
           </sourceDirectories>
+          <testSourceDirectories>
+            <testSourceDirectory>test/clj</testSourceDirectory>
+          </testSourceDirectories>
         </configuration>
         <executions>
           <execution>
@@ -212,28 +207,35 @@
               <goal>compile</goal>
             </goals>
           </execution>
-        </executions>
-      </plugin>
-
-      <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>exec-maven-plugin</artifactId>
-        <version>1.2.1</version>
-        <executions>
           <execution>
+            <id>test-clojure</id>
+            <phase>test</phase>
             <goals>
-              <goal>exec</goal>
+              <goal>test</goal>
             </goals>
           </execution>
         </executions>
-        <configuration>
-          <executable>java</executable>
-          <includeProjectDependencies>true</includeProjectDependencies>
-          <includePluginDependencies>false</includePluginDependencies>
-          <classpathScope>compile</classpathScope>
-          <mainClass>${storm.topology}</mainClass>
-        </configuration>
       </plugin>
+      <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-surefire-plugin</artifactId>
+          <configuration>
+              <!-- TestNG provider does not understand the JUnit 5 groups syntax used in the rest of the project, make sure to override it -->
+              <excludedGroups>none</excludedGroups>
+          </configuration>
+      </plugin>
+      <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-checkstyle-plugin</artifactId>
+          <!--Note - the version would be inherited-->
+          <configuration>
+              <maxAllowedViolations>0</maxAllowedViolations>
+          </configuration>
+      </plugin>
+        <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-pmd-plugin</artifactId>
+        </plugin>
     </plugins>
   </build>
 </project>
