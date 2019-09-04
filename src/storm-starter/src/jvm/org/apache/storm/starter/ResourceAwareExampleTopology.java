@@ -106,7 +106,7 @@ public class ResourceAwareExampleTopology {
         private static final ConcurrentHashMap<String, String> myCrummyCache =
             new ConcurrentHashMap<>();
         private static final int CACHE_SIZE = 100_000;
-        OutputCollector collector;
+        OutputCollector _collector;
 
         protected static String getFromCache(String key) {
             return myCrummyCache.get(key);
@@ -127,7 +127,7 @@ public class ResourceAwareExampleTopology {
 
         @Override
         public void prepare(Map<String, Object> conf, TopologyContext context, OutputCollector collector) {
-            this.collector = collector;
+            _collector = collector;
         }
 
         @Override
@@ -138,8 +138,8 @@ public class ResourceAwareExampleTopology {
                 ret = orig + "!!!";
                 addToCache(orig, ret);
             }
-            collector.emit(tuple, new Values(ret));
-            collector.ack(tuple);
+            _collector.emit(tuple, new Values(ret));
+            _collector.ack(tuple);
         }
 
         @Override

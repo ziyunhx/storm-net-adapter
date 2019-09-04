@@ -341,7 +341,6 @@ public class RankingsTest {
 
         // when
         blitzer.blitz(new Runnable() {
-            @Override
             public void run() {
                 for (Rankable r : entries) {
                     try {

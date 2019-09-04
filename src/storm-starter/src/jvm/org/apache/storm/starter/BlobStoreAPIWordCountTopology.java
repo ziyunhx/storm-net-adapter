@@ -54,7 +54,6 @@ import org.apache.storm.utils.Utils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-@SuppressWarnings("checkstyle:AbbreviationAsWordInName")
 public class BlobStoreAPIWordCountTopology {
     private static final Logger LOG = LoggerFactory.getLogger(BlobStoreAPIWordCountTopology.class);
     private static ClientBlobStore store; // Client API to invoke blob store API functionality
@@ -71,10 +70,10 @@ public class BlobStoreAPIWordCountTopology {
     // storm blobstore create --file blacklist.txt --acl o::rwa key
     private static void createBlobWithContent(String blobKey, ClientBlobStore clientBlobStore, File file)
         throws AuthorizationException, KeyAlreadyExistsException, IOException, KeyNotFoundException {
-        String stringBlobAcl = "o::rwa";
-        AccessControl blobAcl = BlobStoreAclHandler.parseAccessControl(stringBlobAcl);
+        String stringBlobACL = "o::rwa";
+        AccessControl blobACL = BlobStoreAclHandler.parseAccessControl(stringBlobACL);
         List<AccessControl> acls = new LinkedList<AccessControl>();
-        acls.add(blobAcl); // more ACLs can be added here
+        acls.add(blobACL); // more ACLs can be added here
         SettableBlobMeta settableBlobMeta = new SettableBlobMeta(acls);
         AtomicOutputStream blobStream = clientBlobStore.createBlob(blobKey, settableBlobMeta);
         blobStream.write(readFile(file).toString().getBytes());
@@ -215,17 +214,17 @@ public class BlobStoreAPIWordCountTopology {
 
     // Spout implementation
     public static class RandomSentenceSpout extends BaseRichSpout {
-        SpoutOutputCollector collector;
+        SpoutOutputCollector _collector;
 
         @Override
         public void open(Map<String, Object> conf, TopologyContext context, SpoutOutputCollector collector) {
-            this.collector = collector;
+            _collector = collector;
         }
 
         @Override
         public void nextTuple() {
             Utils.sleep(100);
-            collector.emit(new Values(getRandomSentence()));
+            _collector.emit(new Values(getRandomSentence()));
         }
 
         @Override

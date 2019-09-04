@@ -43,13 +43,15 @@ public class RollingTopWords extends ConfigurableTopology {
     /**
      * Submits (runs) the topology.
      *
-     * <p>Usage: "RollingTopWords [topology-name] [-local]"
+     * Usage: "RollingTopWords [topology-name] [-local]"
      *
-     * <p>By default, the topology is run locally under the name
+     * By default, the topology is run locally under the name
      * "slidingWindowCounts".
      *
-     * <p>Examples:
+     * Examples:
+     *
      * ```
+     *
      * # Runs in remote/cluster mode, with topology name "production-topology"
      * $ storm jar storm-starter-jar-with-dependencies.jar org.apache.storm.starter.RollingTopWords production-topology ```
      *
@@ -57,8 +59,8 @@ public class RollingTopWords extends ConfigurableTopology {
      *          First positional argument (optional) is topology name, second
      *          positional argument (optional) defines whether to run the topology
      *          locally ("-local") or remotely, i.e. on a real cluster.
+     * @throws Exception
      */
-    @Override
     protected int run(String[] args) {
         String topologyName = "slidingWindowCounts";
         if (args.length >= 1) {
@@ -68,11 +70,11 @@ public class RollingTopWords extends ConfigurableTopology {
         String spoutId = "wordGenerator";
         String counterId = "counter";
         String intermediateRankerId = "intermediateRanker";
+        String totalRankerId = "finalRanker";
         builder.setSpout(spoutId, new TestWordSpout(), 5);
         builder.setBolt(counterId, new RollingCountBolt(9, 3), 4).fieldsGrouping(spoutId, new Fields("word"));
         builder.setBolt(intermediateRankerId, new IntermediateRankingsBolt(TOP_N), 4).fieldsGrouping(counterId,
                                                                                                      new Fields("obj"));
-        String totalRankerId = "finalRanker";
         builder.setBolt(totalRankerId, new TotalRankingsBolt(TOP_N)).globalGrouping(intermediateRankerId);
         LOG.info("Topology name: " + topologyName);
 

@@ -54,3 +54,16 @@ public class LambdaTopology extends ConfigurableTopology {
         return submit("lambda-demo", conf, builder);
     }
 }
+
+class Prefix implements Serializable {
+    private String str;
+
+    public Prefix(String str) {
+        this.str = str;
+    }
+
+    @Override
+    public String toString() {
+        return this.str;
+    }
+}

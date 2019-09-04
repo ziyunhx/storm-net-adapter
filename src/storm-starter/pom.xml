@@ -20,8 +20,7 @@
   <parent>
       <artifactId>storm</artifactId>
       <groupId>org.apache.storm</groupId>
-      <version>2.1.0</version>
-      <relativePath>../../pom.xml</relativePath>
+      <version>2.0.0</version>
   </parent>
 
   <artifactId>storm-starter</artifactId>
@@ -229,13 +228,9 @@
           <artifactId>maven-checkstyle-plugin</artifactId>
           <!--Note - the version would be inherited-->
           <configuration>
-              <maxAllowedViolations>0</maxAllowedViolations>
+              <maxAllowedViolations>263</maxAllowedViolations>
           </configuration>
       </plugin>
-        <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-pmd-plugin</artifactId>
-        </plugin>
     </plugins>
   </build>
 </project>

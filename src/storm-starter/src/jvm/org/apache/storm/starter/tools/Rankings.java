@@ -39,6 +39,7 @@ public class Rankings implements Serializable {
 
     /**
      * Copy constructor.
+     * @param other
      */
     public Rankings(Rankings other) {
         this(other.maxSize());
@@ -46,7 +47,6 @@ public class Rankings implements Serializable {
     }
 
     /**
-     * Get max size.
      * @return the maximum possible number (size) of ranked objects this instance can hold
      */
     public int maxSize() {
@@ -54,7 +54,6 @@ public class Rankings implements Serializable {
     }
 
     /**
-     * Get size.
      * @return the number (size) of ranked objects this instance is currently holding
      */
     public int size() {
@@ -136,7 +135,6 @@ public class Rankings implements Serializable {
         }
     }
 
-    @Override
     public String toString() {
         return rankedItems.toString();
     }

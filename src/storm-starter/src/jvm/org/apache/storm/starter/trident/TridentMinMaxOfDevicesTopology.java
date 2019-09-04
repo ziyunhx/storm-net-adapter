@@ -41,24 +41,21 @@ public class TridentMinMaxOfDevicesTopology {
      * generates result stream based on min amd max with device-id and count values.
      */
     public static StormTopology buildDevicesTopology() {
-        String deviceId = "device-id";
+        String deviceID = "device-id";
         String count = "count";
-        Fields allFields = new Fields(deviceId, count);
+        Fields allFields = new Fields(deviceID, count);
 
         RandomNumberGeneratorSpout spout = new RandomNumberGeneratorSpout(allFields, 10, 1000);
 
         TridentTopology topology = new TridentTopology();
-        Stream devicesStream = topology
-                .newStream("devicegen-spout", spout)
-                .each(allFields, new Debug("##### devices"));
+        Stream devicesStream = topology.newStream("devicegen-spout", spout).
+            each(allFields, new Debug("##### devices"));
 
-        devicesStream
-                .minBy(deviceId)
-                .each(allFields, new Debug("#### device with min id"));
+        devicesStream.minBy(deviceID).
+            each(allFields, new Debug("#### device with min id"));
 
-        devicesStream
-                .maxBy(count)
-                .each(allFields, new Debug("#### device with max count"));
+        devicesStream.maxBy(count).
+            each(allFields, new Debug("#### device with max count"));
 
         return topology.build();
     }
@@ -76,27 +73,28 @@ public class TridentMinMaxOfDevicesTopology {
         spout.setCycle(true);
 
         TridentTopology topology = new TridentTopology();
-        Stream vehiclesStream = topology
-                .newStream("spout1", spout)
-                .each(allFields, new Debug("##### vehicles"));
+        Stream vehiclesStream = topology.newStream("spout1", spout).
+            each(allFields, new Debug("##### vehicles"));
 
-        Stream slowVehiclesStream = vehiclesStream
+        Stream slowVehiclesStream =
+            vehiclesStream
                 .min(new SpeedComparator())
                 .each(vehicleField, new Debug("#### slowest vehicle"));
 
-        Stream slowDriversStream = slowVehiclesStream
+        Stream slowDriversStream =
+            slowVehiclesStream
                 .project(driverField)
                 .each(driverField, new Debug("##### slowest driver"));
 
         vehiclesStream
-                .max(new SpeedComparator())
-                .each(vehicleField, new Debug("#### fastest vehicle"))
-                .project(driverField)
-                .each(driverField, new Debug("##### fastest driver"));
+            .max(new SpeedComparator())
+            .each(vehicleField, new Debug("#### fastest vehicle"))
+            .project(driverField)
+            .each(driverField, new Debug("##### fastest driver"));
 
         vehiclesStream
-                .max(new EfficiencyComparator())
-                .each(vehicleField, new Debug("#### efficient vehicle"));
+            .max(new EfficiencyComparator()).
+            each(vehicleField, new Debug("#### efficient vehicle"));
 
         return topology.build();
     }
@@ -143,10 +141,10 @@ public class TridentMinMaxOfDevicesTopology {
 
         @Override
         public String toString() {
-            return "Driver{"
-                    + "name='" + name + '\''
-                    + ", id=" + id
-                    + '}';
+            return "Driver{" +
+                   "name='" + name + '\'' +
+                   ", id=" + id +
+                   '}';
         }
     }
 
@@ -178,11 +176,11 @@ public class TridentMinMaxOfDevicesTopology {
 
         @Override
         public String toString() {
-            return "Vehicle{"
-                    + "name='" + name + '\''
-                    + ", maxSpeed=" + maxSpeed
-                    + ", efficiency=" + efficiency
-                    + '}';
+            return "Vehicle{" +
+                   "name='" + name + '\'' +
+                   ", maxSpeed=" + maxSpeed +
+                   ", efficiency=" + efficiency +
+                   '}';
         }
     }
 }

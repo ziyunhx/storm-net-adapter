@@ -35,7 +35,6 @@ public class WordCountTopology extends ConfigurableTopology {
         ConfigurableTopology.start(new WordCountTopology(), args);
     }
 
-    @Override
     protected int run(String[] args) throws Exception {
 
         TopologyBuilder builder = new TopologyBuilder();
